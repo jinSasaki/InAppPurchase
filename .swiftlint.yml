@@ -1,0 +1,18 @@
+excluded:
+disabled_rules:
+file_length:
+  - 500 # warning
+  - 1000 # error
+line_length:
+  - 200 # warning
+  - 300 # error
+type_body_length:
+  - 500 # warning
+  - 1000 # error
+identifier_name:
+  max_length:
+    - 60 # warning
+    - 80 # error
+  min_length:
+    - 1 # warning
+    - 0 # error
