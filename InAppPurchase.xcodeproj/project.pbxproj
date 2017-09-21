@@ -27,7 +27,7 @@
 		93C329761F5E8D6100F7A5E7 /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93C329751F5E8D6100F7A5E7 /* Product.swift */; };
 		93C329781F5E8D8000F7A5E7 /* PaymentTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93C329771F5E8D8000F7A5E7 /* PaymentTransaction.swift */; };
 		93C3297A1F5E8E0C00F7A5E7 /* InAppPurchaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93C329791F5E8E0C00F7A5E7 /* InAppPurchaseTests.swift */; };
-		93C3297C1F5E8E2400F7A5E7 /* StubStoreKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93C3297B1F5E8E2400F7A5E7 /* StubStoreKit.swift */; };
+		93C3297C1F5E8E2400F7A5E7 /* StubInAppPurchase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93C3297B1F5E8E2400F7A5E7 /* StubInAppPurchase.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,7 +64,7 @@
 		93C329751F5E8D6100F7A5E7 /* Product.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Product.swift; sourceTree = "<group>"; };
 		93C329771F5E8D8000F7A5E7 /* PaymentTransaction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaymentTransaction.swift; sourceTree = "<group>"; };
 		93C329791F5E8E0C00F7A5E7 /* InAppPurchaseTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InAppPurchaseTests.swift; sourceTree = "<group>"; };
-		93C3297B1F5E8E2400F7A5E7 /* StubStoreKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StubStoreKit.swift; sourceTree = "<group>"; };
+		93C3297B1F5E8E2400F7A5E7 /* StubInAppPurchase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StubInAppPurchase.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -159,7 +159,7 @@
 				938BFAA91F5E86ED006A4C2A /* StubProductProvider.swift */,
 				938BFAAA1F5E86ED006A4C2A /* StubProductsRequest.swift */,
 				938BFAAB1F5E86ED006A4C2A /* StubProductsResponse.swift */,
-				93C3297B1F5E8E2400F7A5E7 /* StubStoreKit.swift */,
+				93C3297B1F5E8E2400F7A5E7 /* StubInAppPurchase.swift */,
 			);
 			path = Stubs;
 			sourceTree = "<group>";
@@ -319,7 +319,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				93C3297C1F5E8E2400F7A5E7 /* StubStoreKit.swift in Sources */,
+				93C3297C1F5E8E2400F7A5E7 /* StubInAppPurchase.swift in Sources */,
 				938BFAB11F5E86ED006A4C2A /* StubProductProvider.swift in Sources */,
 				93C329721F5E8D0800F7A5E7 /* ProductTests.swift in Sources */,
 				938BFAB31F5E86ED006A4C2A /* StubProductsResponse.swift in Sources */,

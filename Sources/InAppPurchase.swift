@@ -9,42 +9,18 @@
 import Foundation
 import StoreKit
 
-final public class InAppPurchase {
-    static let `default`: InAppPurchaseProvidable = InAppPurchase()
+// MARK: - Public
 
-    fileprivate let productProvider: ProductProvidable
-    fileprivate let paymentProvider: PaymentProvidable
-
-    internal init(product: ProductProvidable = ProductProvider(), payment: PaymentProvidable = PaymentProvider()) {
-        self.productProvider = product
-        self.paymentProvider = payment
-    }
-
-    public static func canMakePayments() -> Bool {
-        return self.default.canMakePayments()
-    }
-
-    public static func addTransactionObserver(shouldAddStorePaymentHandler: ((_ product: Product) -> Bool)? = nil, purchaseHandler: InAppPurchase.PurchaseHandler? = nil) {
-        self.default.addTransactionObserver(shouldAddStorePaymentHandler: shouldAddStorePaymentHandler, purchaseHandler: purchaseHandler)
-    }
-
-    public static func removeTransactionObserver() {
-        self.default.removeTransactionObserver()
-    }
-
-    public static func fetchProduct(productIdentifiers: Set<String>, handler: ((_ result: InAppPurchase.Result<[Product]>) -> Void)?) {
-        self.default.fetchProduct(productIdentifiers: productIdentifiers, handler: handler)
-    }
-
-    public static func restore(handler: ((_ result: InAppPurchase.Result<Void>) -> Void)?) {
-        self.default.restore(handler: handler)
-    }
-    public static func purchase(productIdentifier: String, finishDeferredTransactionHandler: InAppPurchase.PurchaseHandler?, handler: InAppPurchase.PurchaseHandler?) {
-        self.default.purchase(productIdentifier: productIdentifier, finishDeferredTransactionHandler: finishDeferredTransactionHandler, handler: handler)
-    }
+public protocol InAppPurchaseProvidable {
+    func canMakePayments() -> Bool
+    func addTransactionObserver(shouldAddStorePaymentHandler: ((_ product: Product) -> Bool)?, purchaseHandler: InAppPurchase.PurchaseHandler?)
+    func removeTransactionObserver()
+    func fetchProduct(productIdentifiers: Set<String>, handler: ((_ result: InAppPurchase.Result<[Product]>) -> Void)?)
+    func restore(handler: ((_ result: InAppPurchase.Result<Void>) -> Void)?)
+    func purchase(productIdentifier: String, finishDeferredTransactionHandler: InAppPurchase.PurchaseHandler?, handler: InAppPurchase.PurchaseHandler?)
 }
 
-extension InAppPurchase {
+final public class InAppPurchase {
     public typealias PurchaseHandler = (_ result: InAppPurchase.Result<PaymentState>) -> Void
 
     public enum Error {
@@ -57,7 +33,7 @@ extension InAppPurchase {
         case with(error: Swift.Error)
         case unknown
 
-        init(error: Swift.Error?) {
+        internal init(error: Swift.Error?) {
             switch (error as? SKError)?.code {
             case .paymentNotAllowed?:
                 self = .paymentNotAllowed
@@ -87,73 +63,25 @@ extension InAppPurchase {
         case deferred
         case restored
     }
-}
 
-extension InAppPurchase.Error: Equatable {
-    public static func == (lhs: InAppPurchase.Error, rhs: InAppPurchase.Error) -> Bool {
-        switch (lhs, rhs) {
-        case (.emptyProducts, .emptyProducts): return true
-        case (.invalid(productIds: let ids1), .invalid(productIds: let ids2)): return ids1 == ids2
-        case (.paymentNotAllowed, .paymentNotAllowed): return true
-        case (.paymentCancelled, .paymentCancelled): return true
-        case (.storeProductNotAvailable, .storeProductNotAvailable): return true
-        case (.storeTrouble, .storeTrouble): return true
-        case (.with(error: let error1), .with(error: let error2)): return (error1 as NSError) == (error2 as NSError)
-        case (.unknown, .unknown): return true
-        default: return false
-        }
+    public static let `default` = InAppPurchase()
+
+    fileprivate let productProvider: ProductProvidable
+    fileprivate let paymentProvider: PaymentProvidable
+
+    internal init(product: ProductProvidable = ProductProvider(), payment: PaymentProvidable = PaymentProvider()) {
+        self.productProvider = product
+        self.paymentProvider = payment
     }
-}
-
-extension InAppPurchase.PaymentState: Equatable {
-    public static func == (lhs: InAppPurchase.PaymentState, rhs: InAppPurchase.PaymentState) -> Bool {
-        switch (lhs, rhs) {
-        case (.purchased(let transaction1), .purchased(let transaction2)): return transaction1.transactionIdentifier == transaction2.transactionIdentifier
-        case (.deferred, .deferred): return true
-        case (.restored, .restored): return true
-        default: return false
-        }
-    }
-}
-
-internal typealias ProductHandler = (_ result: InAppPurchase.Result<[SKProduct]>) -> Void
-internal typealias PaymentHandler = (_ queue: SKPaymentQueue, _ result: InAppPurchase.Result<SKPaymentTransaction>) -> Void
-internal typealias RestoreHandler = (_ queue: SKPaymentQueue, _ error: InAppPurchase.Error?) -> Void
-internal typealias DeferredHandler = (_ result: InAppPurchase.Result<SKPaymentTransaction>) -> Void
-internal typealias ShouldAddStorePaymentHandler = (_ queue: SKPaymentQueue, _ payment: SKPayment, _ product: SKProduct) -> Bool
-
-internal protocol InAppPurchaseProvidable {
-    func canMakePayments() -> Bool
-    func addTransactionObserver(shouldAddStorePaymentHandler: ((_ product: Product) -> Bool)?, purchaseHandler: InAppPurchase.PurchaseHandler?)
-    func removeTransactionObserver()
-    func fetchProduct(productIdentifiers: Set<String>, handler: ((_ result: InAppPurchase.Result<[Product]>) -> Void)?)
-    func restore(handler: ((_ result: InAppPurchase.Result<Void>) -> Void)?)
-    func purchase(productIdentifier: String, finishDeferredTransactionHandler: InAppPurchase.PurchaseHandler?, handler: InAppPurchase.PurchaseHandler?)
-}
-
-internal protocol ProductProvidable {
-    func fetch(productIdentifiers: Set<String>, requestId: String, handler: @escaping ProductHandler)
-}
-
-internal protocol PaymentProvidable {
-    func canMakePayments() -> Bool
-    func addTransactionObserver()
-    func removeTransactionObserver()
-    func restoreCompletedTransactions(handler: @escaping RestoreHandler)
-    func add(payment: SKPayment, handler: @escaping PaymentHandler)
-    func addPaymentHandler(withProductIdentifier: String, handler: @escaping PaymentHandler)
-    func set(shouldAddStorePaymentHandler: @escaping ShouldAddStorePaymentHandler)
-    func add(finishDeferredTransactionHandler: @escaping DeferredHandler)
 }
 
 extension InAppPurchase: InAppPurchaseProvidable {
-    // MARK: - Internal methods
 
-    internal func canMakePayments() -> Bool {
+    public func canMakePayments() -> Bool {
         return paymentProvider.canMakePayments()
     }
 
-    internal func addTransactionObserver(shouldAddStorePaymentHandler: ((_ product: Product) -> Bool)?, purchaseHandler: InAppPurchase.PurchaseHandler?) {
+    public func addTransactionObserver(shouldAddStorePaymentHandler: ((_ product: Product) -> Bool)? = nil, purchaseHandler: InAppPurchase.PurchaseHandler? = nil) {
         paymentProvider.set { [weak self] (queue, payment, product) -> Bool in
             let shouldAddStorePayment = shouldAddStorePaymentHandler?(Product(product)) ?? false
             if shouldAddStorePayment, let me = self {
@@ -181,11 +109,11 @@ extension InAppPurchase: InAppPurchaseProvidable {
         paymentProvider.addTransactionObserver()
     }
 
-    internal func removeTransactionObserver() {
+    public func removeTransactionObserver() {
         paymentProvider.removeTransactionObserver()
     }
 
-    internal func fetchProduct(productIdentifiers: Set<String>, handler: ((_ result: InAppPurchase.Result<[Product]>) -> Void)?) {
+    public func fetchProduct(productIdentifiers: Set<String>, handler: ((_ result: InAppPurchase.Result<[Product]>) -> Void)? = nil) {
         productProvider.fetch(productIdentifiers: productIdentifiers, requestId: UUID().uuidString) { (result) in
             switch result {
             case .success(let products):
@@ -196,7 +124,7 @@ extension InAppPurchase: InAppPurchaseProvidable {
         }
     }
 
-    internal func restore(handler: ((_ result: InAppPurchase.Result<Void>) -> Void)?) {
+    public func restore(handler: ((_ result: InAppPurchase.Result<Void>) -> Void)?) {
         paymentProvider.restoreCompletedTransactions { (_, error) in
             if let error = error {
                 handler?(.failure(error))
@@ -206,7 +134,7 @@ extension InAppPurchase: InAppPurchaseProvidable {
         }
     }
 
-    internal func purchase(productIdentifier: String, finishDeferredTransactionHandler: InAppPurchase.PurchaseHandler?, handler: InAppPurchase.PurchaseHandler?) {
+    public func purchase(productIdentifier: String, finishDeferredTransactionHandler: InAppPurchase.PurchaseHandler? = nil, handler: InAppPurchase.PurchaseHandler? = nil) {
         // Fetch product from App Store
         let requestId = UUID().uuidString
         productProvider.fetch(productIdentifiers: [productIdentifier], requestId: requestId) { [weak self] (result) in
@@ -246,6 +174,59 @@ extension InAppPurchase: InAppPurchaseProvidable {
             }
         }
     }
+}
+
+extension InAppPurchase.Error: Equatable {
+    public static func == (lhs: InAppPurchase.Error, rhs: InAppPurchase.Error) -> Bool {
+        switch (lhs, rhs) {
+        case (.emptyProducts, .emptyProducts): return true
+        case (.invalid(productIds: let ids1), .invalid(productIds: let ids2)): return ids1 == ids2
+        case (.paymentNotAllowed, .paymentNotAllowed): return true
+        case (.paymentCancelled, .paymentCancelled): return true
+        case (.storeProductNotAvailable, .storeProductNotAvailable): return true
+        case (.storeTrouble, .storeTrouble): return true
+        case (.with(error: let error1), .with(error: let error2)): return (error1 as NSError) == (error2 as NSError)
+        case (.unknown, .unknown): return true
+        default: return false
+        }
+    }
+}
+
+extension InAppPurchase.PaymentState: Equatable {
+    public static func == (lhs: InAppPurchase.PaymentState, rhs: InAppPurchase.PaymentState) -> Bool {
+        switch (lhs, rhs) {
+        case (.purchased(let transaction1), .purchased(let transaction2)): return transaction1.transactionIdentifier == transaction2.transactionIdentifier
+        case (.deferred, .deferred): return true
+        case (.restored, .restored): return true
+        default: return false
+        }
+    }
+}
+
+// MARK: - Internal
+
+internal typealias ProductHandler = (_ result: InAppPurchase.Result<[SKProduct]>) -> Void
+internal typealias PaymentHandler = (_ queue: SKPaymentQueue, _ result: InAppPurchase.Result<SKPaymentTransaction>) -> Void
+internal typealias RestoreHandler = (_ queue: SKPaymentQueue, _ error: InAppPurchase.Error?) -> Void
+internal typealias DeferredHandler = (_ result: InAppPurchase.Result<SKPaymentTransaction>) -> Void
+internal typealias ShouldAddStorePaymentHandler = (_ queue: SKPaymentQueue, _ payment: SKPayment, _ product: SKProduct) -> Bool
+
+internal protocol ProductProvidable {
+    func fetch(productIdentifiers: Set<String>, requestId: String, handler: @escaping ProductHandler)
+}
+
+internal protocol PaymentProvidable {
+    func canMakePayments() -> Bool
+    func addTransactionObserver()
+    func removeTransactionObserver()
+    func restoreCompletedTransactions(handler: @escaping RestoreHandler)
+    func add(payment: SKPayment, handler: @escaping PaymentHandler)
+    func addPaymentHandler(withProductIdentifier: String, handler: @escaping PaymentHandler)
+    func set(shouldAddStorePaymentHandler: @escaping ShouldAddStorePaymentHandler)
+    func add(finishDeferredTransactionHandler: @escaping DeferredHandler)
+}
+
+extension InAppPurchase {
 
     /// Convert deferred handler from PurchaseHandler to PaymentHandler
     internal static func convert(finishDeferredTransactionHandler: InAppPurchase.PurchaseHandler?) -> DeferredHandler {
