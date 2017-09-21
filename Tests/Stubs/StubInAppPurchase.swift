@@ -6,7 +6,6 @@
 //  Copyright © 2017年 Jin Sasaki. All rights reserved.
 //
 
-import StoreKit
 @testable import InAppPurchase
 
 final class StubInAppPurchase: InAppPurchaseProvidable {
