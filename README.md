@@ -1,6 +1,7 @@
 # InAppPurchase
 [![Build Status](https://travis-ci.org/jinSasaki/in-app-purchase.svg?branch=master)](https://travis-ci.org/jinSasaki/in-app-purchase)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+[![codecov](https://codecov.io/gh/jinSasaki/in-app-purchase/branch/master/graph/badge.svg)](https://codecov.io/gh/jinSasaki/in-app-purchase)
 
 A Simple and Lightweight framework for In App Purchase
 
@@ -30,10 +31,11 @@ InAppPurchase.addTransactionObserver()
 ```
 
 **Promoting In App Purchases is available from iOS 11. `InAppPurchase` supports it!**
-Add observer with `shouldAddStorePaymentHandler`. See also [`SKPaymentTransactionObserver#paymentQueue(_:shouldAddStorePayment:for:)`](https://developer.apple.com/documentation/storekit/skpaymenttransactionobserver/2877502-paymentqueue) and [Promoting In-App Purchases Guides](https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/StoreKitGuide/PromotingIn-AppPurchases/PromotingIn-AppPurchases.html#//apple_ref/doc/uid/TP40008267-CH11-SW1)
+Add observer with `shouldAddStorePaymentHandler`.  
+See also [`SKPaymentTransactionObserver#paymentQueue(_:shouldAddStorePayment:for:)`](https://developer.apple.com/documentation/storekit/skpaymenttransactionobserver/2877502-paymentqueue)and [Promoting In-App Purchases Guides](https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/StoreKitGuide/PromotingIn-AppPurchases/PromotingIn-AppPurchases.html#//apple_ref/doc/uid/TP40008267-CH11-SW1)
 
 ```swift
-InAppPurchase..addTransactionObserver(shouldAddStorePaymentHandler: { (product) -> Bool in
+InAppPurchase.addTransactionObserver(shouldAddStorePaymentHandler: { (product) -> Bool in
     // Return whether starting payment
 }, purchaseHandler: { (result) in
     // Handle the result of payment added by Store
@@ -74,15 +76,15 @@ InAppPurchase.restore(handler: { (result) in
 ### Purchase
 
 ```swift
-InAppPurchase.purchase(productIdentifier: "", finishDeferredTransactionHandler: { (result) in
+InAppPurchase.purchase(productIdentifier: "PRODUCT_ID", finishDeferredTransactionHandler: { (result) in
     // `finishDeferredTransactionHandler` is called if the payment had been deferred and then approved.
     // For example, the case that a child requests to purchase, and then the parent approves.
 
     switch result {
     case .success(let state):
-        // Handle `InAppPurchase.PaymentState`
+        // Handle `InAppPurchase.PaymentState` if needed
     case .failure(let error):
-        // Handle `InAppPurchase.Error`
+        // Handle `InAppPurchase.Error` if needed
     }
 }, handler: { (result) in
     // This handler is called if the payment purchased, restored, deferred or failed.
@@ -100,3 +102,6 @@ InAppPurchase.purchase(productIdentifier: "", finishDeferredTransactionHandler: 
 - iOS 9.0+
 - Xcode 9+
 - Swift 4+
+
+## License
+MIT
