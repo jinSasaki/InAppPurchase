@@ -32,6 +32,33 @@ class InAppPurchaseTests: XCTestCase {
         XCTAssertNotEqual(InAppPurchase.Error.paymentNotAllowed, .paymentCancelled)
     }
 
+    func testInAppPurchasePaymentStateEqutable() {
+        XCTAssertEqual(InAppPurchase.PaymentState.deferred, InAppPurchase.PaymentState.deferred)
+        XCTAssertEqual(InAppPurchase.PaymentState.restored, InAppPurchase.PaymentState.restored)
+        XCTAssertNotEqual(InAppPurchase.PaymentState.deferred, InAppPurchase.PaymentState.restored)
+
+        let transaction1 = PaymentTransaction(StubPaymentTransaction(
+            transactionIdentifier: "TRANSACTION_001",
+            transactionState: .purchased, original: nil,
+            payment: StubPayment(productIdentifier: "PRODUCT_001"),
+            error: nil
+        ))
+        let transaction2 = PaymentTransaction(StubPaymentTransaction(
+            transactionIdentifier: "TRANSACTION_001",
+            transactionState: .purchased, original: nil,
+            payment: StubPayment(productIdentifier: "PRODUCT_001"),
+            error: nil
+        ))
+        let transaction3 = PaymentTransaction(StubPaymentTransaction(
+            transactionIdentifier: "TRANSACTION_002",
+            transactionState: .purchased, original: nil,
+            payment: StubPayment(productIdentifier: "PRODUCT_001"),
+            error: nil
+        ))
+        XCTAssertEqual(InAppPurchase.PaymentState.purchased(transaction: transaction1), InAppPurchase.PaymentState.purchased(transaction: transaction2))
+        XCTAssertNotEqual(InAppPurchase.PaymentState.purchased(transaction: transaction1), InAppPurchase.PaymentState.purchased(transaction: transaction3))
+    }
+
     func testCanMakePayments() {
         func check(enabled: Bool) {
             let productProvider = StubProductProvider()
