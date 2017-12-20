@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		930FAD861FEA89D3003181D8 /* InAppPurchaseIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 930FAD851FEA89D3003181D8 /* InAppPurchaseIntegrationTests.swift */; };
 		938BFA7A1F5E8411006A4C2A /* InAppPurchase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 938BFA701F5E8411006A4C2A /* InAppPurchase.framework */; };
 		938BFA811F5E8411006A4C2A /* InAppPurchase.h in Headers */ = {isa = PBXBuildFile; fileRef = 938BFA731F5E8411006A4C2A /* InAppPurchase.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		938BFA981F5E856D006A4C2A /* PaymentProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 938BFA941F5E856D006A4C2A /* PaymentProvider.swift */; };
@@ -41,6 +42,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		930FAD851FEA89D3003181D8 /* InAppPurchaseIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchaseIntegrationTests.swift; sourceTree = "<group>"; };
 		938BFA701F5E8411006A4C2A /* InAppPurchase.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = InAppPurchase.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		938BFA731F5E8411006A4C2A /* InAppPurchase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = InAppPurchase.h; sourceTree = "<group>"; };
 		938BFA741F5E8411006A4C2A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -107,8 +109,8 @@
 		938BFA721F5E8411006A4C2A /* InAppPurchase */ = {
 			isa = PBXGroup;
 			children = (
-				938BFA731F5E8411006A4C2A /* InAppPurchase.h */,
 				938BFA931F5E856D006A4C2A /* Sources */,
+				938BFA731F5E8411006A4C2A /* InAppPurchase.h */,
 				938BFA741F5E8411006A4C2A /* Info.plist */,
 			);
 			path = InAppPurchase;
@@ -126,11 +128,11 @@
 		938BFA931F5E856D006A4C2A /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				938BFA941F5E856D006A4C2A /* PaymentProvider.swift */,
-				938BFA951F5E856D006A4C2A /* ProductProvider.swift */,
 				938BFA971F5E856D006A4C2A /* InAppPurchase.swift */,
-				93C329751F5E8D6100F7A5E7 /* Product.swift */,
+				938BFA941F5E856D006A4C2A /* PaymentProvider.swift */,
 				93C329771F5E8D8000F7A5E7 /* PaymentTransaction.swift */,
+				93C329751F5E8D6100F7A5E7 /* Product.swift */,
+				938BFA951F5E856D006A4C2A /* ProductProvider.swift */,
 			);
 			path = Sources;
 			sourceTree = SOURCE_ROOT;
@@ -138,12 +140,13 @@
 		938BFA9C1F5E8697006A4C2A /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				938BFAA31F5E86ED006A4C2A /* Stubs */,
+				930FAD851FEA89D3003181D8 /* InAppPurchaseIntegrationTests.swift */,
+				93C329791F5E8E0C00F7A5E7 /* InAppPurchaseTests.swift */,
 				938BFA9D1F5E8697006A4C2A /* PaymentProviderTests.swift */,
+				93C329731F5E8D1D00F7A5E7 /* PaymentTransactionTests.swift */,
 				938BFA9E1F5E8697006A4C2A /* ProductProviderTests.swift */,
 				93C329711F5E8D0800F7A5E7 /* ProductTests.swift */,
-				93C329731F5E8D1D00F7A5E7 /* PaymentTransactionTests.swift */,
-				93C329791F5E8E0C00F7A5E7 /* InAppPurchaseTests.swift */,
-				938BFAA31F5E86ED006A4C2A /* Stubs */,
 			);
 			path = Tests;
 			sourceTree = SOURCE_ROOT;
@@ -151,6 +154,7 @@
 		938BFAA31F5E86ED006A4C2A /* Stubs */ = {
 			isa = PBXGroup;
 			children = (
+				93C3297B1F5E8E2400F7A5E7 /* StubInAppPurchase.swift */,
 				938BFAA41F5E86ED006A4C2A /* StubPayment.swift */,
 				938BFAA51F5E86ED006A4C2A /* StubPaymentProvider.swift */,
 				938BFAA61F5E86ED006A4C2A /* StubPaymentQueue.swift */,
@@ -159,7 +163,6 @@
 				938BFAA91F5E86ED006A4C2A /* StubProductProvider.swift */,
 				938BFAAA1F5E86ED006A4C2A /* StubProductsRequest.swift */,
 				938BFAAB1F5E86ED006A4C2A /* StubProductsResponse.swift */,
-				93C3297B1F5E8E2400F7A5E7 /* StubInAppPurchase.swift */,
 			);
 			path = Stubs;
 			sourceTree = "<group>";
@@ -223,15 +226,17 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0830;
-				LastUpgradeCheck = 0830;
+				LastUpgradeCheck = 0910;
 				ORGANIZATIONNAME = "Jin Sasaki";
 				TargetAttributes = {
 					938BFA6F1F5E8411006A4C2A = {
 						CreatedOnToolsVersion = 8.3.3;
+						LastSwiftMigration = 0910;
 						ProvisioningStyle = Automatic;
 					};
 					938BFA781F5E8411006A4C2A = {
 						CreatedOnToolsVersion = 8.3.3;
+						LastSwiftMigration = 0910;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -307,11 +312,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				93C329781F5E8D8000F7A5E7 /* PaymentTransaction.swift in Sources */,
-				938BFA991F5E856D006A4C2A /* ProductProvider.swift in Sources */,
-				93C329761F5E8D6100F7A5E7 /* Product.swift in Sources */,
 				938BFA9B1F5E856D006A4C2A /* InAppPurchase.swift in Sources */,
 				938BFA981F5E856D006A4C2A /* PaymentProvider.swift in Sources */,
+				93C329781F5E8D8000F7A5E7 /* PaymentTransaction.swift in Sources */,
+				93C329761F5E8D6100F7A5E7 /* Product.swift in Sources */,
+				938BFA991F5E856D006A4C2A /* ProductProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -319,20 +324,21 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				93C3297C1F5E8E2400F7A5E7 /* StubInAppPurchase.swift in Sources */,
-				938BFAB11F5E86ED006A4C2A /* StubProductProvider.swift in Sources */,
-				93C329721F5E8D0800F7A5E7 /* ProductTests.swift in Sources */,
-				938BFAB31F5E86ED006A4C2A /* StubProductsResponse.swift in Sources */,
-				938BFAAC1F5E86ED006A4C2A /* StubPayment.swift in Sources */,
-				938BFAB01F5E86ED006A4C2A /* StubProduct.swift in Sources */,
-				938BFAA01F5E8697006A4C2A /* PaymentProviderTests.swift in Sources */,
-				938BFAAE1F5E86ED006A4C2A /* StubPaymentQueue.swift in Sources */,
-				93C329741F5E8D1D00F7A5E7 /* PaymentTransactionTests.swift in Sources */,
-				938BFAAF1F5E86ED006A4C2A /* StubPaymentTransaction.swift in Sources */,
-				938BFAA11F5E8697006A4C2A /* ProductProviderTests.swift in Sources */,
-				938BFAB21F5E86ED006A4C2A /* StubProductsRequest.swift in Sources */,
-				938BFAAD1F5E86ED006A4C2A /* StubPaymentProvider.swift in Sources */,
+				930FAD861FEA89D3003181D8 /* InAppPurchaseIntegrationTests.swift in Sources */,
 				93C3297A1F5E8E0C00F7A5E7 /* InAppPurchaseTests.swift in Sources */,
+				938BFAA01F5E8697006A4C2A /* PaymentProviderTests.swift in Sources */,
+				93C329741F5E8D1D00F7A5E7 /* PaymentTransactionTests.swift in Sources */,
+				938BFAA11F5E8697006A4C2A /* ProductProviderTests.swift in Sources */,
+				93C329721F5E8D0800F7A5E7 /* ProductTests.swift in Sources */,
+				93C3297C1F5E8E2400F7A5E7 /* StubInAppPurchase.swift in Sources */,
+				938BFAAC1F5E86ED006A4C2A /* StubPayment.swift in Sources */,
+				938BFAAD1F5E86ED006A4C2A /* StubPaymentProvider.swift in Sources */,
+				938BFAAE1F5E86ED006A4C2A /* StubPaymentQueue.swift in Sources */,
+				938BFAAF1F5E86ED006A4C2A /* StubPaymentTransaction.swift in Sources */,
+				938BFAB01F5E86ED006A4C2A /* StubProduct.swift in Sources */,
+				938BFAB11F5E86ED006A4C2A /* StubProductProvider.swift in Sources */,
+				938BFAB21F5E86ED006A4C2A /* StubProductsRequest.swift in Sources */,
+				938BFAB31F5E86ED006A4C2A /* StubProductsResponse.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -357,7 +363,9 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
@@ -365,7 +373,11 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -412,7 +424,9 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
@@ -420,7 +434,11 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -464,7 +482,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = jp.sasakky.InAppPurchase;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
@@ -482,7 +500,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = jp.sasakky.InAppPurchase;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};
@@ -494,7 +512,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = jp.sasakky.InAppPurchaseTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
@@ -506,7 +524,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = jp.sasakky.InAppPurchaseTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};

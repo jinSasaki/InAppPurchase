@@ -91,7 +91,7 @@ class InAppPurchaseTests: XCTestCase {
         let iap = InAppPurchase(product: productProvider, payment: paymentProvider)
         iap.addTransactionObserver(
             shouldAddStorePaymentHandler: nil,
-            purchaseHandler: { _ in
+            fallbackHandler: { _ in
                 XCTFail()
         })
         wait(for: [expectation1, expectation2], timeout: 1)
@@ -128,12 +128,12 @@ class InAppPurchaseTests: XCTestCase {
         let iap = InAppPurchase(product: productProvider, payment: paymentProvider)
         iap.addTransactionObserver(
             shouldAddStorePaymentHandler: { _ -> Bool in return true },
-            purchaseHandler: { (result) in
+            fallbackHandler: { (result) in
                 switch result {
                 case .success(let state):
                     XCTAssertEqual(state, InAppPurchase.PaymentState.purchased(transaction: PaymentTransaction(transaction)))
-                case .failure(let error):
-                    XCTAssertEqual(error, InAppPurchase.Error.storeTrouble)
+                case .failure:
+                    XCTFail()
                 }
                 expectation4.fulfill()
         })
@@ -164,7 +164,7 @@ class InAppPurchaseTests: XCTestCase {
         let iap = InAppPurchase(product: productProvider, payment: paymentProvider)
         iap.addTransactionObserver(
             shouldAddStorePaymentHandler: { _ -> Bool in return true },
-            purchaseHandler: { (result) in
+            fallbackHandler: { (result) in
                 switch result {
                 case .success:
                     XCTFail()
@@ -298,7 +298,7 @@ class InAppPurchaseTests: XCTestCase {
 
         let expectation2 = self.expectation()
         let iap = InAppPurchase(product: productProvider, payment: paymentProvider)
-        iap.purchase(productIdentifier: "PRODUCT_001", finishDeferredTransactionHandler: nil, handler: { (result) in
+        iap.purchase(productIdentifier: "PRODUCT_001", handler: { (result) in
             switch result {
             case .success(let state):
                 if case let .purchased(transaction) = state {
@@ -323,7 +323,7 @@ class InAppPurchaseTests: XCTestCase {
 
         let expectation = self.expectation()
         let iap = InAppPurchase(product: productProvider, payment: paymentProvider)
-        iap.purchase(productIdentifier: "PRODUCT_001", finishDeferredTransactionHandler: nil, handler: { (result) in
+        iap.purchase(productIdentifier: "PRODUCT_001", handler: { (result) in
             switch result {
             case .failure(let error):
                 let expression: Bool
@@ -349,7 +349,7 @@ class InAppPurchaseTests: XCTestCase {
 
         let expectation = self.expectation()
         let iap = InAppPurchase(product: productProvider, payment: paymentProvider)
-        iap.purchase(productIdentifier: "PRODUCT_001", finishDeferredTransactionHandler: nil, handler: { (result) in
+        iap.purchase(productIdentifier: "PRODUCT_001", handler: { (result) in
             switch result {
             case .failure(let error):
                 let expression: Bool
@@ -382,7 +382,7 @@ class InAppPurchaseTests: XCTestCase {
 
         let expectation2 = self.expectation()
         let iap = InAppPurchase(product: productProvider, payment: paymentProvider)
-        iap.purchase(productIdentifier: "PRODUCT_001", finishDeferredTransactionHandler: nil, handler: { (result) in
+        iap.purchase(productIdentifier: "PRODUCT_001", handler: { (result) in
             switch result {
             case .failure(let error):
                 let expression: Bool
@@ -416,10 +416,10 @@ class InAppPurchaseTests: XCTestCase {
             }
             expectation.fulfill()
         }
-        let deferredHandler = InAppPurchase.convert(finishDeferredTransactionHandler: purchaseHandler)
+        let fallbackHandler = InAppPurchase.convertToFallbackHandler(from: purchaseHandler)
         let originalTransaction = StubPaymentTransaction(transactionIdentifier: "ORIGINAL_TRANSACTION_001", transactionState: .purchased)
         let transaction = StubPaymentTransaction(transactionIdentifier: "TRANSACTION_001", transactionState: .purchased, original: originalTransaction)
-        deferredHandler(.success(transaction))
+        fallbackHandler(StubPaymentQueue(), .success(transaction))
         wait(for: [expectation], timeout: 1)
     }
 
@@ -440,8 +440,8 @@ class InAppPurchaseTests: XCTestCase {
             }
             expectation.fulfill()
         }
-        let deferredHandler = InAppPurchase.convert(finishDeferredTransactionHandler: purchaseHandler)
-        deferredHandler(.failure(.storeTrouble))
+        let fallbackHandler = InAppPurchase.convertToFallbackHandler(from: purchaseHandler)
+        fallbackHandler(StubPaymentQueue(), .failure(.storeTrouble))
         wait(for: [expectation], timeout: 1)
     }
 
@@ -457,7 +457,7 @@ class InAppPurchaseTests: XCTestCase {
         )
 
         let iap = InAppPurchase(product: productProvider, payment: paymentProvider)
-        iap.handle(queue: queue, transaction: transaction, finishDeferredTransactionHandler: nil, handler: { _ in
+        iap.handle(queue: queue, transaction: transaction, handler: { _ in
             XCTFail()
         })
     }
@@ -481,7 +481,7 @@ class InAppPurchaseTests: XCTestCase {
 
         let expectation = self.expectation()
         let iap = InAppPurchase(product: productProvider, payment: paymentProvider)
-        iap.handle(queue: queue, transaction: transaction, finishDeferredTransactionHandler: nil, handler: { result in
+        iap.handle(queue: queue, transaction: transaction, handler: { result in
             switch result {
             case .success(let state):
                 if case let .purchased(transaction) = state {
@@ -511,7 +511,7 @@ class InAppPurchaseTests: XCTestCase {
 
         let expectation = self.expectation()
         let iap = InAppPurchase(product: productProvider, payment: paymentProvider)
-        iap.handle(queue: queue, transaction: transaction, finishDeferredTransactionHandler: nil, handler: { result in
+        iap.handle(queue: queue, transaction: transaction, handler: { result in
             switch result {
             case .success(let state):
                 XCTAssertEqual(state, .restored)
@@ -524,11 +524,8 @@ class InAppPurchaseTests: XCTestCase {
     }
 
     func testHandleWhereDeferred() {
-        let expectation1 = self.expectation()
         let productProvider = StubProductProvider()
-        let paymentProvider = StubPaymentProvider(finishDeferredTransactionHandler: { _ in
-            expectation1.fulfill()
-        })
+        let paymentProvider = StubPaymentProvider()
         let queue = StubPaymentQueue()
         let payment = StubPayment(productIdentifier: "PRODUCT_001")
         let transaction = StubPaymentTransaction(
@@ -537,20 +534,18 @@ class InAppPurchaseTests: XCTestCase {
             payment: payment
         )
 
-        let expectation2 = self.expectation()
+        let expectation1 = self.expectation()
         let iap = InAppPurchase(product: productProvider, payment: paymentProvider)
-        iap.handle(queue: queue, transaction: transaction, finishDeferredTransactionHandler: { _ in
-            // Do nothing
-        }, handler: { result in
+        iap.handle(queue: queue, transaction: transaction, handler: { result in
             switch result {
             case .success(let state):
                 XCTAssertEqual(state, .deferred)
             case .failure:
                 XCTFail()
             }
-            expectation2.fulfill()
+            expectation1.fulfill()
         })
-        wait(for: [expectation1, expectation2], timeout: 1)
+        wait(for: [expectation1], timeout: 1)
     }
 
     func testHandleWhereFailed() {
@@ -569,7 +564,7 @@ class InAppPurchaseTests: XCTestCase {
 
         let expectation = self.expectation()
         let iap = InAppPurchase(product: productProvider, payment: paymentProvider)
-        iap.handle(queue: queue, transaction: transaction, finishDeferredTransactionHandler: nil, handler: { result in
+        iap.handle(queue: queue, transaction: transaction, handler: { result in
             switch result {
             case .success:
                 XCTFail()

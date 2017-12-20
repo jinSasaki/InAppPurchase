@@ -13,11 +13,11 @@ import StoreKit
 
 public protocol InAppPurchaseProvidable {
     func canMakePayments() -> Bool
-    func addTransactionObserver(shouldAddStorePaymentHandler: ((_ product: Product) -> Bool)?, purchaseHandler: InAppPurchase.PurchaseHandler?)
+    func addTransactionObserver(shouldAddStorePaymentHandler: ((_ product: Product) -> Bool)?, fallbackHandler: InAppPurchase.PurchaseHandler?)
     func removeTransactionObserver()
     func fetchProduct(productIdentifiers: Set<String>, handler: ((_ result: InAppPurchase.Result<[Product]>) -> Void)?)
     func restore(handler: ((_ result: InAppPurchase.Result<Void>) -> Void)?)
-    func purchase(productIdentifier: String, finishDeferredTransactionHandler: InAppPurchase.PurchaseHandler?, handler: InAppPurchase.PurchaseHandler?)
+    func purchase(productIdentifier: String, handler: InAppPurchase.PurchaseHandler?)
 }
 
 final public class InAppPurchase {
@@ -81,31 +81,27 @@ extension InAppPurchase: InAppPurchaseProvidable {
         return paymentProvider.canMakePayments()
     }
 
-    public func addTransactionObserver(shouldAddStorePaymentHandler: ((_ product: Product) -> Bool)? = nil, purchaseHandler: InAppPurchase.PurchaseHandler? = nil) {
+    public func addTransactionObserver(shouldAddStorePaymentHandler: ((_ product: Product) -> Bool)? = nil, fallbackHandler: InAppPurchase.PurchaseHandler? = nil) {
         paymentProvider.set { [weak self] (queue, payment, product) -> Bool in
             let shouldAddStorePayment = shouldAddStorePaymentHandler?(Product(product)) ?? false
             if shouldAddStorePayment, let me = self {
                 me.paymentProvider.addPaymentHandler(withProductIdentifier: payment.productIdentifier, handler: { (queue, result) in
                     switch result {
                     case .success(let transaction):
-                        guard let me = self else {
-                            purchaseHandler?(.failure(InAppPurchase.Error.unknown))
-                            return
-                        }
-                        me.handle(
+                        self?.handle(
                             queue: queue,
                             transaction: transaction,
-                            finishDeferredTransactionHandler: nil,
-                            handler: purchaseHandler
+                            handler: fallbackHandler
                         )
                     case .failure(let error):
-                        purchaseHandler?(.failure(error))
+                        fallbackHandler?(.failure(error))
                     }
                 })
             }
             return shouldAddStorePayment
         }
 
+        paymentProvider.set(fallbackHandler: InAppPurchase.convertToFallbackHandler(from: fallbackHandler))
         paymentProvider.addTransactionObserver()
     }
 
@@ -134,7 +130,7 @@ extension InAppPurchase: InAppPurchaseProvidable {
         }
     }
 
-    public func purchase(productIdentifier: String, finishDeferredTransactionHandler: InAppPurchase.PurchaseHandler? = nil, handler: InAppPurchase.PurchaseHandler? = nil) {
+    public func purchase(productIdentifier: String, handler: InAppPurchase.PurchaseHandler? = nil) {
         // Fetch product from App Store
         let requestId = UUID().uuidString
         productProvider.fetch(productIdentifiers: [productIdentifier], requestId: requestId) { [weak self] (result) in
@@ -144,25 +140,15 @@ extension InAppPurchase: InAppPurchaseProvidable {
                     handler?(.failure(InAppPurchase.Error.emptyProducts))
                     return
                 }
-                let finishDeferredTransactionPaymentHandler = InAppPurchase.convert(finishDeferredTransactionHandler: finishDeferredTransactionHandler)
 
-                guard let me = self else {
-                    handler?(.failure(InAppPurchase.Error.unknown))
-                    return
-                }
                 // Add payment to App Store queue
                 let payment = SKPayment(product: product)
-                me.paymentProvider.add(payment: payment, handler: { [weak self] (queue, result) in
+                self?.paymentProvider.add(payment: payment, handler: { [weak self] (queue, result) in
                     switch result {
                     case .success(let transaction):
-                        guard let me = self else {
-                            handler?(.failure(InAppPurchase.Error.unknown))
-                            return
-                        }
-                        me.handle(
+                        self?.handle(
                             queue: queue,
                             transaction: transaction,
-                            finishDeferredTransactionHandler: finishDeferredTransactionPaymentHandler,
                             handler: handler
                         )
                     case .failure(let error):
@@ -208,7 +194,6 @@ extension InAppPurchase.PaymentState: Equatable {
 internal typealias ProductHandler = (_ result: InAppPurchase.Result<[SKProduct]>) -> Void
 internal typealias PaymentHandler = (_ queue: SKPaymentQueue, _ result: InAppPurchase.Result<SKPaymentTransaction>) -> Void
 internal typealias RestoreHandler = (_ queue: SKPaymentQueue, _ error: InAppPurchase.Error?) -> Void
-internal typealias DeferredHandler = (_ result: InAppPurchase.Result<SKPaymentTransaction>) -> Void
 internal typealias ShouldAddStorePaymentHandler = (_ queue: SKPaymentQueue, _ payment: SKPayment, _ product: SKProduct) -> Bool
 
 internal protocol ProductProvidable {
@@ -223,25 +208,25 @@ internal protocol PaymentProvidable {
     func add(payment: SKPayment, handler: @escaping PaymentHandler)
     func addPaymentHandler(withProductIdentifier: String, handler: @escaping PaymentHandler)
     func set(shouldAddStorePaymentHandler: @escaping ShouldAddStorePaymentHandler)
-    func add(finishDeferredTransactionHandler: @escaping DeferredHandler)
+    func set(fallbackHandler: @escaping PaymentHandler)
 }
 
 extension InAppPurchase {
 
     /// Convert deferred handler from PurchaseHandler to PaymentHandler
-    internal static func convert(finishDeferredTransactionHandler: InAppPurchase.PurchaseHandler?) -> DeferredHandler {
-        let finishDeferredTransactionHandler: DeferredHandler = { (result) in
+    internal static func convertToFallbackHandler(from handler: InAppPurchase.PurchaseHandler?) -> PaymentHandler {
+        let fallbackHandler: PaymentHandler = { (_, result) in
             switch result {
             case .success(let transaction):
-                finishDeferredTransactionHandler?(.success(.purchased(transaction: PaymentTransaction(transaction))))
+                handler?(.success(.purchased(transaction: PaymentTransaction(transaction))))
             case .failure(let error):
-                finishDeferredTransactionHandler?(.failure(error))
+                handler?(.failure(error))
             }
         }
-        return finishDeferredTransactionHandler
+        return fallbackHandler
     }
 
-    internal func handle(queue: SKPaymentQueue, transaction: SKPaymentTransaction, finishDeferredTransactionHandler: DeferredHandler?, handler: InAppPurchase.PurchaseHandler?) {
+    internal func handle(queue: SKPaymentQueue, transaction: SKPaymentTransaction, handler: InAppPurchase.PurchaseHandler?) {
         switch transaction.transactionState {
         case .purchasing:
             // Do nothing
@@ -251,9 +236,6 @@ extension InAppPurchase {
         case .restored:
             handler?(.success(.restored))
         case .deferred:
-            if let finishDeferredTransactionHandler = finishDeferredTransactionHandler {
-                paymentProvider.add(finishDeferredTransactionHandler: finishDeferredTransactionHandler)
-            }
             handler?(.success(.deferred))
         case .failed:
             handler?(.failure(InAppPurchase.Error(error: transaction.error)))

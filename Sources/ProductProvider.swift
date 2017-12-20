@@ -26,7 +26,7 @@ final internal class ProductProvider: NSObject {
     }
 }
 
-extension ProductProvider:  ProductProvidable {
+extension ProductProvider: ProductProvidable {
     internal func fetch(request: SKProductsRequest, handler: @escaping ProductHandler) {
         dispatchQueue.async {
             self.requestHandlers[request.id] = handler
