@@ -6,7 +6,7 @@ xcode_sdk: iphonesimulator
 
 before_install:
   - brew update
-  - brew install swiftlint
+  - brew install swiftlint 2> /dev/null
   - SIMULATOR_UUID=`xcrun simctl create "iPhone 7" "iPhone 7" 11.0`
 script:
   - set -o pipefail
