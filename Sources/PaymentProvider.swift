@@ -20,12 +20,13 @@ protocol PaymentQueue {
 
 final internal class PaymentProvider: NSObject {
 
-    fileprivate let paymentQueue: PaymentQueue
-    fileprivate var paymentHandlers: [String: [PaymentHandler]] = [:]
-    fileprivate var restoreHandlers: [RestoreHandler] = []
-    fileprivate var fallbackHandler: PaymentHandler?
-    fileprivate var shouldAddStorePaymentHandler: ShouldAddStorePaymentHandler?
-    fileprivate lazy var dispatchQueue: DispatchQueue = DispatchQueue(label: String(describing: self))
+    private let paymentQueue: PaymentQueue
+    private var paymentHandlers: [String: [PaymentHandler]] = [:]
+    private var restoreHandlers: [RestoreHandler] = []
+    private var fallbackHandler: PaymentHandler?
+    private var shouldAddStorePaymentHandler: ShouldAddStorePaymentHandler?
+    private var storePaymentHandler: PaymentHandler?
+    private lazy var dispatchQueue: DispatchQueue = DispatchQueue(label: String(describing: self))
 
     init(paymentQueue: PaymentQueue = SKPaymentQueue.default()) {
         self.paymentQueue = paymentQueue
