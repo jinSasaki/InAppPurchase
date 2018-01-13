@@ -3,7 +3,7 @@
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![codecov](https://codecov.io/gh/jinSasaki/InAppPurchase/branch/master/graph/badge.svg)](https://codecov.io/gh/jinSasaki/InAppPurchase)
 
-A Simple and Lightweight framework for In App Purchase
+A Simple, Lightweight and Safe framework for In App Purchase
 
 ## Feature
 - Simple and Light :+1:
@@ -25,18 +25,27 @@ github "jinSasaki/InAppPurchase"
 
 ```swift
 let iap = InAppPurchase.default
-iap.addTransactionObserver()
+iap.addTransactionObserver(fallbackHandler: {
+    // Handle the result of payment added by Store
+    // See also `InAppPurchase#purchase`
+})
 ```
+
+If you want to detect the unexpected transactions, pass `addTransactionObserver()` with `fallbackHandler`.  
+For example, your app requested a payment, but it crashed in that process. That transaction is not finished, and then will receive at next launch.  
+This `fallbackHandler` is called when any handlers are not set to `InAppPurchase` via `purchase(productIdentifier: handler:)` method and so on. 
 
 **Promoting In App Purchases is available from iOS 11. `InAppPurchase` supports it!**
 Add observer with `shouldAddStorePaymentHandler`.  
 See also [`SKPaymentTransactionObserver#paymentQueue(_:shouldAddStorePayment:for:)`](https://developer.apple.com/documentation/storekit/skpaymenttransactionobserver/2877502-paymentqueue)and [Promoting In-App Purchases Guides](https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/StoreKitGuide/PromotingIn-AppPurchases/PromotingIn-AppPurchases.html#//apple_ref/doc/uid/TP40008267-CH11-SW1)
 
+![promoting](./assets/promoting.png)
+
 ```swift
 let iap = InAppPurchase.default
-iap.addTransactionObserver(shouldAddStorePaymentHandler: { (product) -> Bool in
+iap.set(shouldAddStorePaymentHandler: { (product) -> Bool in
     // Return whether starting payment
-}, fallbackHandler: { (result) in
+}, handler: { (result) in
     // Handle the result of payment added by Store
     // See also `InAppPurchase#purchase`
 })
