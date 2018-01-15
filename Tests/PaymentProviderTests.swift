@@ -242,14 +242,14 @@ class PaymentProviderTests: XCTestCase {
         wait(for: [finishExpectation, expectation], timeout: 1)
     }
 
-    func testAddFinishDeferredTransactionHandler() {
+    func testSetFallbackHandler() {
         let finishExpectation = self.expectation()
         let queue = StubPaymentQueue(finishTransactionHandler: { _ in
             finishExpectation.fulfill()
         })
         let provider = PaymentProvider(paymentQueue: queue)
         let expectation = self.expectation()
-        provider.add(finishDeferredTransactionHandler: { (result) in
+        provider.set(fallbackHandler: { (_, result) in
             switch result {
             case .success(let transaction):
                 XCTAssertEqual(transaction.transactionIdentifier, "TRANSACTION_001")

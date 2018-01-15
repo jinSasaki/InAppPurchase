@@ -1,7 +1,8 @@
 excluded:
 disabled_rules:
+  - xctfail_message
 file_length:
-  - 500 # warning
+  - 600 # warning
   - 1000 # error
 line_length:
   - 200 # warning
@@ -9,6 +10,9 @@ line_length:
 type_body_length:
   - 500 # warning
   - 1000 # error
+function_body_length:
+  - 50 # warning
+  - 60 # error
 identifier_name:
   max_length:
     - 60 # warning

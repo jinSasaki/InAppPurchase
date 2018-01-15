@@ -10,7 +10,7 @@ import Foundation
 import StoreKit
 
 protocol PaymentQueue {
-    func canMakePayments() -> Bool
+    static func canMakePayments() -> Bool
     func add(_ observer: SKPaymentTransactionObserver)
     func remove(_ observer: SKPaymentTransactionObserver)
 
@@ -20,12 +20,13 @@ protocol PaymentQueue {
 
 final internal class PaymentProvider: NSObject {
 
-    fileprivate let paymentQueue: PaymentQueue
-    fileprivate var paymentHandlers: [String: [PaymentHandler]] = [:]
-    fileprivate var restoreHandlers: [RestoreHandler] = []
-    fileprivate var finishDeferredTransactionHandlers: [DeferredHandler] = []
-    fileprivate var shouldAddStorePaymentHandler: ShouldAddStorePaymentHandler?
-    fileprivate lazy var dispatchQueue: DispatchQueue = DispatchQueue(label: String(describing: self))
+    private let paymentQueue: PaymentQueue
+    private var paymentHandlers: [String: [PaymentHandler]] = [:]
+    private var restoreHandlers: [RestoreHandler] = []
+    private var fallbackHandler: PaymentHandler?
+    private var shouldAddStorePaymentHandler: ShouldAddStorePaymentHandler?
+    private var storePaymentHandler: PaymentHandler?
+    private lazy var dispatchQueue: DispatchQueue = DispatchQueue(label: String(describing: self))
 
     init(paymentQueue: PaymentQueue = SKPaymentQueue.default()) {
         self.paymentQueue = paymentQueue
@@ -34,7 +35,7 @@ final internal class PaymentProvider: NSObject {
 
 extension PaymentProvider: PaymentProvidable {
     internal func canMakePayments() -> Bool {
-        return paymentQueue.canMakePayments()
+        return type(of: paymentQueue).canMakePayments()
     }
 
     internal func addTransactionObserver() {
@@ -69,24 +70,14 @@ extension PaymentProvider: PaymentProvidable {
         }
     }
 
-    internal func add(finishDeferredTransactionHandler: @escaping DeferredHandler) {
+    internal func set(fallbackHandler: @escaping PaymentHandler) {
         dispatchQueue.async {
-            self.finishDeferredTransactionHandlers.append(finishDeferredTransactionHandler)
+            self.fallbackHandler = fallbackHandler
         }
     }
 
     internal func set(shouldAddStorePaymentHandler: @escaping ShouldAddStorePaymentHandler) {
         self.shouldAddStorePaymentHandler = shouldAddStorePaymentHandler
-    }
-
-    internal func executeDeferredHandler(transaction: SKPaymentTransaction) {
-        dispatchQueue.async {
-            let handlers = self.finishDeferredTransactionHandlers
-            self.finishDeferredTransactionHandlers = []
-            DispatchQueue.main.async {
-                handlers.forEach({ $0(.success(transaction)) })
-            }
-        }
     }
 }
 
@@ -97,19 +88,22 @@ extension PaymentProvider: SKPaymentTransactionObserver {
             case .purchasing:
                 // Do nothing and skip
                 continue
-            case .purchased, .failed:
-                self.executeDeferredHandler(transaction: transaction)
-                fallthrough
-            case .restored:
-                queue.finishTransaction(transaction)
-            case .deferred:
+            case  .deferred:
                 break
+            case .purchased, .failed, .restored:
+                queue.finishTransaction(transaction)
             }
 
             dispatchQueue.async {
-                let handlers = self.paymentHandlers.removeValue(forKey: transaction.payment.productIdentifier)
-                DispatchQueue.main.async {
-                    handlers?.forEach({ $0(queue, .success(transaction)) })
+                if let handlers = self.paymentHandlers.removeValue(forKey: transaction.payment.productIdentifier), !handlers.isEmpty {
+                    DispatchQueue.main.async {
+                        handlers.forEach({ $0(queue, .success(transaction)) })
+                    }
+                } else {
+                    let handler = self.fallbackHandler
+                    DispatchQueue.main.async {
+                        handler?(queue, .success(transaction))
+                    }
                 }
             }
         }

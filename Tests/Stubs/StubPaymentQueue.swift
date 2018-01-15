@@ -11,7 +11,7 @@ import Foundation
 import StoreKit
 
 final class StubPaymentQueue: SKPaymentQueue {
-    private let _canMakePayments: Bool
+    private static var _canMakePayments: Bool = false
     private let _addObserverHandler: ((_ observer: SKPaymentTransactionObserver) -> Void)?
     private let _removeObserverHandler: ((_ observer: SKPaymentTransactionObserver) -> Void)?
     private let _addPaymentHandler: ((_ payment: SKPayment) -> Void)?
@@ -25,7 +25,7 @@ final class StubPaymentQueue: SKPaymentQueue {
          restoreCompletedTransactionsHandler: (() -> Void)? = nil,
          finishTransactionHandler: ((_ transaction: SKPaymentTransaction) -> Void)? = nil) {
 
-        self._canMakePayments = canMakePayments
+        StubPaymentQueue._canMakePayments = canMakePayments
         self._addObserverHandler = addObserverHandler
         self._removeObserverHandler = removeObserverHandler
         self._addPaymentHandler = addPaymentHandler
@@ -33,7 +33,7 @@ final class StubPaymentQueue: SKPaymentQueue {
         self._finishTransactionHandler = finishTransactionHandler
     }
 
-    override func canMakePayments() -> Bool {
+    @objc override class func canMakePayments() -> Bool {
         return _canMakePayments
     }
 

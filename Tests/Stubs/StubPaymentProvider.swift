@@ -18,7 +18,7 @@ final class StubPaymentProvider: PaymentProvidable {
     private let _addPaymentHandler: ((_ payment: SKPayment, _ handler: @escaping PaymentHandler) -> Void)?
     private let _addProductIdentifierHandler: ((_ productIdentifier: String, _ handler: @escaping PaymentHandler) -> Void)?
     private let _setShouldAddStorePaymentHandler: ((@escaping ShouldAddStorePaymentHandler) -> Void)?
-    private let _finishDeferredTransactionHandler: ((_ finishDeferredTransactionHandler: @escaping DeferredHandler) -> Void)?
+    private let _fallbackHandler: ((_ fallbackHandler: @escaping PaymentHandler) -> Void)?
 
     init(canMakePayments: Bool = true,
          addTransactionObserverHandler: (() -> Void)? = nil,
@@ -27,7 +27,7 @@ final class StubPaymentProvider: PaymentProvidable {
          addPaymentHandler: ((_ payment: SKPayment, _ handler: @escaping PaymentHandler) -> Void)? = nil,
          addProductIdentifierHandler: ((_ productIdentifier: String, _ handler: @escaping PaymentHandler) -> Void)? = nil,
          setShouldAddStorePaymentHandler: ((@escaping ShouldAddStorePaymentHandler) -> Void)? = nil,
-         finishDeferredTransactionHandler: ((_ finishDeferredTransactionHandler: @escaping DeferredHandler) -> Void)? = nil) {
+         fallbackHandler: ((_ fallbackHandler: @escaping PaymentHandler) -> Void)? = nil) {
 
         self._canMakePayments = canMakePayments
         self._addTransactionObserverHandler = addTransactionObserverHandler
@@ -36,7 +36,7 @@ final class StubPaymentProvider: PaymentProvidable {
         self._addPaymentHandler = addPaymentHandler
         self._addProductIdentifierHandler = addProductIdentifierHandler
         self._setShouldAddStorePaymentHandler = setShouldAddStorePaymentHandler
-        self._finishDeferredTransactionHandler = finishDeferredTransactionHandler
+        self._fallbackHandler = fallbackHandler
     }
 
     func canMakePayments() -> Bool {
@@ -67,7 +67,7 @@ final class StubPaymentProvider: PaymentProvidable {
         _addProductIdentifierHandler?(productIdentifier, handler)
     }
 
-    func add(finishDeferredTransactionHandler: @escaping DeferredHandler) {
-        _finishDeferredTransactionHandler?(finishDeferredTransactionHandler)
+    func set(fallbackHandler: @escaping PaymentHandler) {
+        _fallbackHandler?(fallbackHandler)
     }
 }

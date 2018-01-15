@@ -1,9 +1,9 @@
 # InAppPurchase
-[![Build Status](https://travis-ci.org/jinSasaki/in-app-purchase.svg?branch=master)](https://travis-ci.org/jinSasaki/in-app-purchase)
+[![Build Status](https://travis-ci.org/jinSasaki/InAppPurchase.svg?branch=master)](https://travis-ci.org/jinSasaki/InAppPurchase)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
-[![codecov](https://codecov.io/gh/jinSasaki/in-app-purchase/branch/master/graph/badge.svg)](https://codecov.io/gh/jinSasaki/in-app-purchase)
+[![codecov](https://codecov.io/gh/jinSasaki/InAppPurchase/branch/master/graph/badge.svg)](https://codecov.io/gh/jinSasaki/InAppPurchase)
 
-A Simple and Lightweight framework for In App Purchase
+A Simple, Lightweight and Safe framework for In App Purchase
 
 ## Feature
 - Simple and Light :+1:
@@ -25,18 +25,27 @@ github "jinSasaki/InAppPurchase"
 
 ```swift
 let iap = InAppPurchase.default
-iap.addTransactionObserver()
+iap.addTransactionObserver(fallbackHandler: {
+    // Handle the result of payment added by Store
+    // See also `InAppPurchase#purchase`
+})
 ```
+
+If you want to detect the unexpected transactions, pass `addTransactionObserver()` with `fallbackHandler`.  
+For example, your app requested a payment, but it crashed in that process. That transaction is not finished, and then will receive at next launch.  
+This `fallbackHandler` is called when any handlers are not set to `InAppPurchase` via `purchase(productIdentifier: handler:)` method and so on. 
 
 **Promoting In App Purchases is available from iOS 11. `InAppPurchase` supports it!**
 Add observer with `shouldAddStorePaymentHandler`.  
 See also [`SKPaymentTransactionObserver#paymentQueue(_:shouldAddStorePayment:for:)`](https://developer.apple.com/documentation/storekit/skpaymenttransactionobserver/2877502-paymentqueue)and [Promoting In-App Purchases Guides](https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/StoreKitGuide/PromotingIn-AppPurchases/PromotingIn-AppPurchases.html#//apple_ref/doc/uid/TP40008267-CH11-SW1)
 
+![promoting](./assets/promoting.png)
+
 ```swift
 let iap = InAppPurchase.default
-iap.addTransactionObserver(shouldAddStorePaymentHandler: { (product) -> Bool in
+iap.set(shouldAddStorePaymentHandler: { (product) -> Bool in
     // Return whether starting payment
-}, purchaseHandler: { (result) in
+}, handler: { (result) in
     // Handle the result of payment added by Store
     // See also `InAppPurchase#purchase`
 })
@@ -79,17 +88,7 @@ iap.restore(handler: { (result) in
 
 ```swift
 let iap = InAppPurchase.default
-iap.purchase(productIdentifier: "PRODUCT_ID", finishDeferredTransactionHandler: { (result) in
-    // `finishDeferredTransactionHandler` is called if the payment had been deferred and then approved.
-    // For example, the case that a child requests to purchase, and then the parent approves.
-
-    switch result {
-    case .success(let state):
-        // Handle `InAppPurchase.PaymentState` if needed
-    case .failure(let error):
-        // Handle `InAppPurchase.Error` if needed
-    }
-}, handler: { (result) in
+iap.purchase(productIdentifier: "PRODUCT_ID", handler: { (result) in
     // This handler is called if the payment purchased, restored, deferred or failed.
 
     switch result {
@@ -164,22 +163,22 @@ import XCTest
 
 // Stub
 final class StubInAppPurchase: InAppPurchaseProvidable {
-    private let _purchaseHandler: ((_ productIdentifier: String, _ finishDeferredTransactionHandler: InAppPurchase.PurchaseHandler?, _ handler: InAppPurchase.PurchaseHandler?) -> Void)?
+    private let _purchaseHandler: ((_ productIdentifier: String, _ handler: InAppPurchase.PurchaseHandler?) -> Void)?
 
-    init(purchaseHandler: ((_ productIdentifier: String, _ finishDeferredTransactionHandler: InAppPurchase.PurchaseHandler?, _ handler: InAppPurchase.PurchaseHandler?) -> Void)? = nil) {
+    init(purchaseHandler: ((_ productIdentifier: String, _ handler: InAppPurchase.PurchaseHandler?) -> Void)? = nil) {
         self._purchaseHandler = purchaseHandler
     }
 
-    func purchase(productIdentifier: String, finishDeferredTransactionHandler: InAppPurchase.PurchaseHandler?, handler: InAppPurchase.PurchaseHandler?) {
-        _purchaseHandler?(productIdentifier, finishDeferredTransactionHandler, handler)
+    func purchase(productIdentifier: String, handler: InAppPurchase.PurchaseHandler?) {
+        _purchaseHandler?(productIdentifier, handler)
     }
 }
 
 // Test
-class PurchaseServiceTests: XCTestCase {
+final class PurchaseServiceTests: XCTestCase {
     func testPurchase() {
         let expectation = self.expectation(description: "purchase handler was called.")
-        let iap = StubInAppPurchase(purchaseHandler: { productIdentifier, finishDeferredTransactionHandler , handler in
+        let iap = StubInAppPurchase(purchaseHandler: { productIdentifier, handler in
             // Assert productIdentifier, handler, and so on.
         })
         let purchaseService = PurchaseService(iap: iap)
