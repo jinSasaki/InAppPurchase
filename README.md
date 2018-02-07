@@ -20,6 +20,11 @@ A Simple, Lightweight and Safe framework for In App Purchase
 github "jinSasaki/InAppPurchase"
 ```
 
+### CocoaPods
+```ruby
+pod "InAppPurchase"
+```
+
 ## Usage
 
 ### Setup Observer
