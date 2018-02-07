@@ -2,6 +2,7 @@
 [![Build Status](https://travis-ci.org/jinSasaki/InAppPurchase.svg?branch=master)](https://travis-ci.org/jinSasaki/InAppPurchase)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![codecov](https://codecov.io/gh/jinSasaki/InAppPurchase/branch/master/graph/badge.svg)](https://codecov.io/gh/jinSasaki/InAppPurchase)
+[![Platform](https://img.shields.io/cocoapods/p/InAppPurchase.svg?style=flat)](http://cocoapods.org/pods/InAppPurchase)
 
 A Simple, Lightweight and Safe framework for In App Purchase
 
