@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		930FAD861FEA89D3003181D8 /* InAppPurchaseIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 930FAD851FEA89D3003181D8 /* InAppPurchaseIntegrationTests.swift */; };
+		933BE10320D4A381002AA195 /* StubSubscriptionPeriod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933BE10220D4A381002AA195 /* StubSubscriptionPeriod.swift */; };
 		938BFA7A1F5E8411006A4C2A /* InAppPurchase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 938BFA701F5E8411006A4C2A /* InAppPurchase.framework */; };
 		938BFA811F5E8411006A4C2A /* InAppPurchase.h in Headers */ = {isa = PBXBuildFile; fileRef = 938BFA731F5E8411006A4C2A /* InAppPurchase.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		938BFA981F5E856D006A4C2A /* PaymentProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 938BFA941F5E856D006A4C2A /* PaymentProvider.swift */; };
@@ -43,6 +44,7 @@
 
 /* Begin PBXFileReference section */
 		930FAD851FEA89D3003181D8 /* InAppPurchaseIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchaseIntegrationTests.swift; sourceTree = "<group>"; };
+		933BE10220D4A381002AA195 /* StubSubscriptionPeriod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StubSubscriptionPeriod.swift; sourceTree = "<group>"; };
 		938BFA701F5E8411006A4C2A /* InAppPurchase.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = InAppPurchase.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		938BFA731F5E8411006A4C2A /* InAppPurchase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = InAppPurchase.h; sourceTree = "<group>"; };
 		938BFA741F5E8411006A4C2A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -163,6 +165,7 @@
 				938BFAA91F5E86ED006A4C2A /* StubProductProvider.swift */,
 				938BFAAA1F5E86ED006A4C2A /* StubProductsRequest.swift */,
 				938BFAAB1F5E86ED006A4C2A /* StubProductsResponse.swift */,
+				933BE10220D4A381002AA195 /* StubSubscriptionPeriod.swift */,
 			);
 			path = Stubs;
 			sourceTree = "<group>";
@@ -337,6 +340,7 @@
 				938BFAAF1F5E86ED006A4C2A /* StubPaymentTransaction.swift in Sources */,
 				938BFAB01F5E86ED006A4C2A /* StubProduct.swift in Sources */,
 				938BFAB11F5E86ED006A4C2A /* StubProductProvider.swift in Sources */,
+				933BE10320D4A381002AA195 /* StubSubscriptionPeriod.swift in Sources */,
 				938BFAB21F5E86ED006A4C2A /* StubProductsRequest.swift in Sources */,
 				938BFAB31F5E86ED006A4C2A /* StubProductsResponse.swift in Sources */,
 			);
