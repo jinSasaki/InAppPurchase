@@ -47,7 +47,8 @@ If you want to detect the unexpected transactions, pass `addTransactionObserver(
 For example, your app requested a payment, but it crashed in that process. That transaction is not finished, and then will receive at next launch.  
 This `fallbackHandler` is called when any handlers are not set to `InAppPurchase` via `purchase(productIdentifier: handler:)` method and so on. 
 
-**Promoting In App Purchases is available from iOS 11. `InAppPurchase` supports it!**
+#### Promoting In App Purchases is available from iOS 11. `InAppPurchase` supports it!
+
 Add observer with `shouldAddStorePaymentHandler`.  
 See also [`SKPaymentTransactionObserver#paymentQueue(_:shouldAddStorePayment:for:)`](https://developer.apple.com/documentation/storekit/skpaymenttransactionobserver/2877502-paymentqueue)and [Promoting In-App Purchases Guides](https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/StoreKitGuide/PromotingIn-AppPurchases/PromotingIn-AppPurchases.html#//apple_ref/doc/uid/TP40008267-CH11-SW1)
 
@@ -63,7 +64,13 @@ iap.set(shouldAddStorePaymentHandler: { (product) -> Bool in
 })
 ```
 
-Stop payment observing if needed.
+**:warning: Do not use `Product#priceLocale`**
+
+Only if purchase via AppStore Promoting, `SKProduct#priceLocale` has been not initialized. It occurs a BAD_ACCESS crash. This is a StoreKit bug.
+InAppPurchace resolved the crash that is occurred when received the payment, but it occurs when accessed `Product#priceLocale` yet.
+So, I recommend not to use `Product#priceLocale` in AppStore Promoting Payment process.
+
+#### Stop payment observing if needed.
 
 ```swift
 let iap = InAppPurchase.default
