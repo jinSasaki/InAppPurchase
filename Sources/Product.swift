@@ -9,30 +9,40 @@
 import StoreKit
 
 public struct Product {
-    public let productIdentifier: String
-    public let price: Decimal
-    public let localizedTitle: String
-    public let localizedDescription: String
-    public let priceLocale: Locale
-    public let isDownloadable: Bool
-    public let downloadContentLengths: [NSNumber]
-    public let downloadContentVersion: String
-    public let subscriptionPeriod: ProductSubscriptionPeriod?
-
-    internal init(_ product: SKProduct) {
-        self.productIdentifier = product.productIdentifier
-        self.price = product.price as Decimal
-        self.localizedTitle = product.localizedTitle
-        self.priceLocale = product.priceLocale
-        self.localizedDescription = product.localizedDescription
-        self.isDownloadable = product.isDownloadable
-        self.downloadContentLengths = product.downloadContentLengths
-        self.downloadContentVersion = product.downloadContentVersion
-        if #available(iOS 11.2, *), let subscriptionPeriod = product.subscriptionPeriod {
-            self.subscriptionPeriod = ProductSubscriptionPeriod(subscriptionPeriod)
-        } else {
-            self.subscriptionPeriod = nil
+    public var productIdentifier: String {
+        return skProduct.productIdentifier
+    }
+    public var price: Decimal {
+        return skProduct.price as Decimal
+    }
+    public var localizedTitle: String {
+        return skProduct.localizedTitle
+    }
+    public var localizedDescription: String {
+        return skProduct.localizedDescription
+    }
+    public var priceLocale: Locale {
+        return skProduct.priceLocale
+    }
+    public var isDownloadable: Bool {
+        return skProduct.isDownloadable
+    }
+    public var downloadContentLengths: [NSNumber] {
+        return skProduct.downloadContentLengths
+    }
+    public var downloadContentVersion: String {
+        return skProduct.downloadContentVersion
+    }
+    public var subscriptionPeriod: ProductSubscriptionPeriod? {
+        guard #available(iOS 11.2, *), let subscriptionPeriod = skProduct.subscriptionPeriod else {
+            return nil
         }
+        return ProductSubscriptionPeriod(subscriptionPeriod)
+    }
+    private let skProduct: SKProduct
+
+    internal init(_ skProduct: SKProduct) {
+        self.skProduct = skProduct
     }
 }
 

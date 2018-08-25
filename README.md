@@ -1,4 +1,5 @@
 # InAppPurchase
+
 [![Build Status](https://travis-ci.org/jinSasaki/InAppPurchase.svg?branch=master)](https://travis-ci.org/jinSasaki/InAppPurchase)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![Version](https://img.shields.io/cocoapods/v/InAppPurchase.svg?style=flat)](http://cocoapods.org/pods/InAppPurchase)
@@ -8,6 +9,7 @@
 A Simple, Lightweight and Safe framework for In App Purchase
 
 ## Feature
+
 - Simple and Light :+1:
 - Support [Promoting In-App Purchases](https://developer.apple.com/app-store/promoting-in-app-purchases/) :moneybag:
 - No need to consider `StoreKit`! :sunglasses:
@@ -16,11 +18,13 @@ A Simple, Lightweight and Safe framework for In App Purchase
 ## Installation
 
 ### Carthage
-```
+
+```txt
 github "jinSasaki/InAppPurchase"
 ```
 
 ### CocoaPods
+
 ```ruby
 pod "InAppPurchase"
 ```
@@ -28,6 +32,7 @@ pod "InAppPurchase"
 ## Usage
 
 ### Setup Observer
+
 **NOTE: This method should be called at launch.**
 
 ```swift
@@ -66,6 +71,7 @@ iap.removeTransactionObserver()
 ```
 
 ### Fetch Product Information
+
 ```swift
 let iap = InAppPurchase.default
 iap.fetchProduct(productIdentifiers: ["PRODUCT_ID"], handler: { (result) in
@@ -79,6 +85,7 @@ iap.fetchProduct(productIdentifiers: ["PRODUCT_ID"], handler: { (result) in
 ```
 
 ### Restore Completed Transaction
+
 ```swift
 let iap = InAppPurchase.default
 iap.restore(handler: { (result) in
@@ -125,7 +132,7 @@ final class PurchaseService {
     func purchase() {
         // Purchase with `InAppPurchase`
         InAppPurchase.default.purchase(productIdentifier: ...) {
-            // Do something            
+            // Do something
         }
     }
 }
@@ -154,7 +161,7 @@ final class PurchaseService {
     func purchase() {
         // Purchase with `InAppPurchase`
         iap.purchase(productIdentifier: ...) {
-            // Do something            
+            // Do something
         }
     }
 }
@@ -202,9 +209,11 @@ final class PurchaseServiceTests: XCTestCase {
 If you want more information for test, see also [Stubs](./Tests/Stubs/) and [Tests](./Tests/).
 
 ## Requirements
+
 - iOS 9.0+
 - Xcode 9+
 - Swift 4+
 
 ## License
+
 MIT

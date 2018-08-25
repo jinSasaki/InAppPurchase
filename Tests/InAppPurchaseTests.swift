@@ -205,7 +205,7 @@ class InAppPurchaseTests: XCTestCase {
         let paymentProvider = StubPaymentProvider()
 
         let iap = InAppPurchase(product: productProvider, payment: paymentProvider)
-        iap.fetchProduct(productIdentifiers: []) { (result) in
+        iap.fetchProduct(productIdentifiers: ["PRODUCT_001"]) { (result) in
             switch result {
             case .success(let products):
                 XCTAssertEqual(products.count, 1)

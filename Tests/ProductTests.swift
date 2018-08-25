@@ -34,6 +34,7 @@ class ProductTests: XCTestCase {
         XCTAssertEqual(product.productIdentifier, "PRODUCT_001")
         XCTAssertEqual(product.price, 100)
         XCTAssertEqual(product.localizedTitle, "PRODUCT_NAME_001")
+        XCTAssertEqual(product.localizedDescription, "PRODUCT_DESCRIPTION_001")
         XCTAssertEqual(product.priceLocale.identifier, "locale_001")
         XCTAssertEqual(product.isDownloadable, true)
         XCTAssertEqual(product.downloadContentLengths, [1, 2])
