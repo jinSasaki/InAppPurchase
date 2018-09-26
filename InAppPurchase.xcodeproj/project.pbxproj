@@ -340,9 +340,9 @@
 				938BFAAF1F5E86ED006A4C2A /* StubPaymentTransaction.swift in Sources */,
 				938BFAB01F5E86ED006A4C2A /* StubProduct.swift in Sources */,
 				938BFAB11F5E86ED006A4C2A /* StubProductProvider.swift in Sources */,
-				933BE10320D4A381002AA195 /* StubSubscriptionPeriod.swift in Sources */,
 				938BFAB21F5E86ED006A4C2A /* StubProductsRequest.swift in Sources */,
 				938BFAB31F5E86ED006A4C2A /* StubProductsResponse.swift in Sources */,
+				933BE10320D4A381002AA195 /* StubSubscriptionPeriod.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
