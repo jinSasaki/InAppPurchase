@@ -63,6 +63,7 @@ public enum PeriodUnit {
     case month
     case year
 
+    @available(iOS 11.2, *)
     init(_ unit: SKProduct.PeriodUnit) {
         switch unit {
         case .day: self = .day

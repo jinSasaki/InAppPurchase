@@ -1,16 +1,16 @@
 language: objective-c
 xcode_project: InAppPurchase.xcodeproj
 xcode_scheme: InAppPurchaseTests
-osx_image: xcode9.4
+osx_image: xcode10
 xcode_sdk: iphonesimulator
 
 before_install:
   - brew update && brew bundle
-  - SIMULATOR_UUID_11=`xcrun simctl create "iPhone 4s" "iPhone 4s" 9.3`
-  - SIMULATOR_UUID_11_4=`xcrun simctl create "iPhone 8" "iPhone 8" 11.4`
+  - SIMULATOR_UUID_9=`xcrun simctl create "iPhone 4s" "iPhone 4s" 9.3`
+  - SIMULATOR_UUID_12=`xcrun simctl create "iPhone XS" "iPhone XS" 12.0`
 script:
   - set -o pipefail
-  - xcodebuild build-for-testing test-without-building -scheme InAppPurchaseTests -configuration Debug -sdk iphonesimulator -destination "id=$SIMULATOR_UUID_11" ENABLE_TESTABILITY=YES | xcpretty
-  - xcodebuild build-for-testing test-without-building -scheme InAppPurchaseTests -configuration Debug -sdk iphonesimulator -destination "id=$SIMULATOR_UUID_11_4" ENABLE_TESTABILITY=YES | xcpretty
+  - xcodebuild build-for-testing test-without-building -scheme InAppPurchaseTests -configuration Debug -sdk iphonesimulator -destination "id=$SIMULATOR_UUID_9" ENABLE_TESTABILITY=YES | xcpretty
+  - xcodebuild build-for-testing test-without-building -scheme InAppPurchaseTests -configuration Debug -sdk iphonesimulator -destination "id=$SIMULATOR_UUID_12" ENABLE_TESTABILITY=YES | xcpretty
 after_success:
     - bash <(curl -s https://codecov.io/bash)
