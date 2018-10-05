@@ -6,55 +6,21 @@
 //  Copyright © 2017年 Jin Sasaki. All rights reserved.
 //
 
-import StoreKit
-
-public struct Product {
-    public var productIdentifier: String {
-        return skProduct.productIdentifier
-    }
-    public var price: Decimal {
-        return skProduct.price as Decimal
-    }
-    public var localizedTitle: String {
-        return skProduct.localizedTitle
-    }
-    public var localizedDescription: String {
-        return skProduct.localizedDescription
-    }
-    public var priceLocale: Locale {
-        return skProduct.priceLocale
-    }
-    public var isDownloadable: Bool {
-        return skProduct.isDownloadable
-    }
-    public var downloadContentLengths: [NSNumber] {
-        return skProduct.downloadContentLengths
-    }
-    public var downloadContentVersion: String {
-        return skProduct.downloadContentVersion
-    }
-    public var subscriptionPeriod: ProductSubscriptionPeriod? {
-        guard #available(iOS 11.2, *), let subscriptionPeriod = skProduct.subscriptionPeriod else {
-            return nil
-        }
-        return ProductSubscriptionPeriod(subscriptionPeriod)
-    }
-    private let skProduct: SKProduct
-
-    internal init(_ skProduct: SKProduct) {
-        self.skProduct = skProduct
-    }
+public protocol Product {
+    var productIdentifier: String { get }
+    var price: Decimal { get }
+    var localizedTitle: String { get }
+    var localizedDescription: String { get }
+    var priceLocale: Locale { get }
+    var isDownloadable: Bool { get }
+    var downloadContentLengths: [NSNumber] { get }
+    var downloadContentVersion: String { get }
+    var subscriptionPeriod: ProductSubscriptionPeriod? { get }
 }
 
-public struct ProductSubscriptionPeriod {
-    public let numberOfUnits: Int
-    public let unit: PeriodUnit
-
-    @available(iOS 11.2, *)
-    internal init(_ period: SKProductSubscriptionPeriod) {
-        self.numberOfUnits = period.numberOfUnits
-        self.unit = PeriodUnit(period.unit)
-    }
+public protocol ProductSubscriptionPeriod {
+    var numberOfUnits: Int { get }
+    var unit: PeriodUnit { get }
 }
 
 public enum PeriodUnit {
@@ -62,14 +28,4 @@ public enum PeriodUnit {
     case week
     case month
     case year
-
-    @available(iOS 11.2, *)
-    init(_ unit: SKProduct.PeriodUnit) {
-        switch unit {
-        case .day: self = .day
-        case .week: self = .week
-        case .month: self = .month
-        case .year: self = .year
-        }
-    }
 }
