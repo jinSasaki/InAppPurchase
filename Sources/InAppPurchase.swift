@@ -24,7 +24,7 @@ public protocol InAppPurchaseProvidable {
 final public class InAppPurchase {
     public typealias PurchaseHandler = (_ result: InAppPurchase.Result<PaymentState>) -> Void
 
-    public enum Error {
+    public enum Error: Swift.Error {
         case emptyProducts
         case invalid(productIds: [String])
         case paymentNotAllowed
