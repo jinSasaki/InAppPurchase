@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		009BF76E21673160004CCBD7 /* Internal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009BF76D21673160004CCBD7 /* Internal.swift */; };
+		009BF77121673362004CCBD7 /* Internal+Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009BF77021673362004CCBD7 /* Internal+Product.swift */; };
+		009BF77421673437004CCBD7 /* Internal+InAppPurchase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009BF77321673437004CCBD7 /* Internal+InAppPurchase.swift */; };
 		930FAD861FEA89D3003181D8 /* InAppPurchaseIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 930FAD851FEA89D3003181D8 /* InAppPurchaseIntegrationTests.swift */; };
 		933BE10320D4A381002AA195 /* StubSubscriptionPeriod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933BE10220D4A381002AA195 /* StubSubscriptionPeriod.swift */; };
 		938BFA7A1F5E8411006A4C2A /* InAppPurchase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 938BFA701F5E8411006A4C2A /* InAppPurchase.framework */; };
@@ -43,6 +46,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		009BF76D21673160004CCBD7 /* Internal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Internal.swift; sourceTree = "<group>"; };
+		009BF77021673362004CCBD7 /* Internal+Product.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Internal+Product.swift"; sourceTree = "<group>"; };
+		009BF77321673437004CCBD7 /* Internal+InAppPurchase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Internal+InAppPurchase.swift"; sourceTree = "<group>"; };
 		930FAD851FEA89D3003181D8 /* InAppPurchaseIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchaseIntegrationTests.swift; sourceTree = "<group>"; };
 		933BE10220D4A381002AA195 /* StubSubscriptionPeriod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StubSubscriptionPeriod.swift; sourceTree = "<group>"; };
 		938BFA701F5E8411006A4C2A /* InAppPurchase.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = InAppPurchase.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -90,6 +96,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		009BF76F21673357004CCBD7 /* Internal */ = {
+			isa = PBXGroup;
+			children = (
+				009BF77321673437004CCBD7 /* Internal+InAppPurchase.swift */,
+				009BF77021673362004CCBD7 /* Internal+Product.swift */,
+				009BF76D21673160004CCBD7 /* Internal.swift */,
+				938BFA941F5E856D006A4C2A /* PaymentProvider.swift */,
+				938BFA951F5E856D006A4C2A /* ProductProvider.swift */,
+			);
+			path = Internal;
+			sourceTree = "<group>";
+		};
 		938BFA661F5E8411006A4C2A = {
 			isa = PBXGroup;
 			children = (
@@ -130,11 +148,10 @@
 		938BFA931F5E856D006A4C2A /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				009BF76F21673357004CCBD7 /* Internal */,
 				938BFA971F5E856D006A4C2A /* InAppPurchase.swift */,
-				938BFA941F5E856D006A4C2A /* PaymentProvider.swift */,
 				93C329771F5E8D8000F7A5E7 /* PaymentTransaction.swift */,
 				93C329751F5E8D6100F7A5E7 /* Product.swift */,
-				938BFA951F5E856D006A4C2A /* ProductProvider.swift */,
 			);
 			path = Sources;
 			sourceTree = SOURCE_ROOT;
@@ -316,6 +333,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				938BFA9B1F5E856D006A4C2A /* InAppPurchase.swift in Sources */,
+				009BF77421673437004CCBD7 /* Internal+InAppPurchase.swift in Sources */,
+				009BF77121673362004CCBD7 /* Internal+Product.swift in Sources */,
+				009BF76E21673160004CCBD7 /* Internal.swift in Sources */,
 				938BFA981F5E856D006A4C2A /* PaymentProvider.swift in Sources */,
 				93C329781F5E8D8000F7A5E7 /* PaymentTransaction.swift in Sources */,
 				93C329761F5E8D6100F7A5E7 /* Product.swift in Sources */,

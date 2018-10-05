@@ -37,19 +37,19 @@ class InAppPurchaseTests: XCTestCase {
         XCTAssertEqual(InAppPurchase.PaymentState.restored, InAppPurchase.PaymentState.restored)
         XCTAssertNotEqual(InAppPurchase.PaymentState.deferred, InAppPurchase.PaymentState.restored)
 
-        let transaction1 = PaymentTransaction(StubPaymentTransaction(
+        let transaction1 = Internal.PaymentTransaction(StubPaymentTransaction(
             transactionIdentifier: "TRANSACTION_001",
             transactionState: .purchased, original: nil,
             payment: StubPayment(productIdentifier: "PRODUCT_001"),
             error: nil
         ))
-        let transaction2 = PaymentTransaction(StubPaymentTransaction(
+        let transaction2 = Internal.PaymentTransaction(StubPaymentTransaction(
             transactionIdentifier: "TRANSACTION_001",
             transactionState: .purchased, original: nil,
             payment: StubPayment(productIdentifier: "PRODUCT_001"),
             error: nil
         ))
-        let transaction3 = PaymentTransaction(StubPaymentTransaction(
+        let transaction3 = Internal.PaymentTransaction(StubPaymentTransaction(
             transactionIdentifier: "TRANSACTION_002",
             transactionState: .purchased, original: nil,
             payment: StubPayment(productIdentifier: "PRODUCT_001"),
@@ -125,7 +125,7 @@ class InAppPurchaseTests: XCTestCase {
             handler: { (result) in
                 switch result {
                 case .success(let state):
-                    XCTAssertEqual(state, InAppPurchase.PaymentState.purchased(transaction: PaymentTransaction(transaction)))
+                    XCTAssertEqual(state, InAppPurchase.PaymentState.purchased(transaction: Internal.PaymentTransaction(transaction)))
                 case .failure:
                     XCTFail()
                 }

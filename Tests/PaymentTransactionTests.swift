@@ -24,7 +24,7 @@ class PaymentTransactionTests: XCTestCase {
             original: original,
             payment: payment)
 
-        let transaction = PaymentTransaction(skTransaction)
+        let transaction = Internal.PaymentTransaction(skTransaction)
 
         XCTAssertEqual(transaction.transactionIdentifier, "TRANSACTION_001")
         XCTAssertEqual(transaction.originalTransactionIdentifier, "ORIGINAL_TRANSACTION_001")
