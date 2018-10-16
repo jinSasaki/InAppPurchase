@@ -456,7 +456,6 @@ class InAppPurchaseTests: XCTestCase {
     }
 
     func testHandleWherePurchasing() {
-        let queue = StubPaymentQueue()
         let payment = StubPayment(productIdentifier: "PRODUCT_001")
         let transaction = StubPaymentTransaction(
             transactionIdentifier: "TRANSACTION_001",
@@ -464,13 +463,12 @@ class InAppPurchaseTests: XCTestCase {
             payment: payment
         )
 
-        InAppPurchase.handle(queue: queue, transaction: transaction, handler: { _ in
+        InAppPurchase.handle(transaction: transaction, handler: { _ in
             XCTFail()
         })
     }
 
     func testHandleWherePurchased() {
-        let queue = StubPaymentQueue()
         let payment = StubPayment(productIdentifier: "PRODUCT_001")
         let originalTransaction = StubPaymentTransaction(
             transactionIdentifier: "ORIGINAL_TRANSACTION_001",
@@ -485,7 +483,7 @@ class InAppPurchaseTests: XCTestCase {
         )
 
         let expectation = self.expectation()
-        InAppPurchase.handle(queue: queue, transaction: transaction, handler: { result in
+        InAppPurchase.handle(transaction: transaction, handler: { result in
             switch result {
             case .success(let state):
                 if case let .purchased(transaction) = state {
@@ -503,7 +501,6 @@ class InAppPurchaseTests: XCTestCase {
     }
 
     func testHandleWhereRestored() {
-        let queue = StubPaymentQueue()
         let payment = StubPayment(productIdentifier: "PRODUCT_001")
         let transaction = StubPaymentTransaction(
             transactionIdentifier: "TRANSACTION_001",
@@ -512,7 +509,7 @@ class InAppPurchaseTests: XCTestCase {
         )
 
         let expectation = self.expectation()
-        InAppPurchase.handle(queue: queue, transaction: transaction, handler: { result in
+        InAppPurchase.handle(transaction: transaction, handler: { result in
             switch result {
             case .success(let state):
                 XCTAssertEqual(state, .restored)
@@ -525,7 +522,6 @@ class InAppPurchaseTests: XCTestCase {
     }
 
     func testHandleWhereDeferred() {
-        let queue = StubPaymentQueue()
         let payment = StubPayment(productIdentifier: "PRODUCT_001")
         let transaction = StubPaymentTransaction(
             transactionIdentifier: "TRANSACTION_001",
@@ -534,7 +530,7 @@ class InAppPurchaseTests: XCTestCase {
         )
 
         let expectation1 = self.expectation()
-        InAppPurchase.handle(queue: queue, transaction: transaction, handler: { result in
+        InAppPurchase.handle(transaction: transaction, handler: { result in
             switch result {
             case .success(let state):
                 XCTAssertEqual(state, .deferred)
@@ -547,7 +543,6 @@ class InAppPurchaseTests: XCTestCase {
     }
 
     func testHandleWhereFailed() {
-        let queue = StubPaymentQueue()
 
         let error = NSError(domain: "test", code: 500, userInfo: nil)
         let payment = StubPayment(productIdentifier: "PRODUCT_001")
@@ -559,7 +554,7 @@ class InAppPurchaseTests: XCTestCase {
         )
 
         let expectation = self.expectation()
-        InAppPurchase.handle(queue: queue, transaction: transaction, handler: { result in
+        InAppPurchase.handle(transaction: transaction, handler: { result in
             switch result {
             case .success:
                 XCTFail()

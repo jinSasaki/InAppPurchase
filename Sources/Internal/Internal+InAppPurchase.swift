@@ -54,7 +54,7 @@ extension InAppPurchase {
         let fallbackHandler: PaymentHandler = { (_, result) in
             switch result {
             case .success(let transaction):
-                handler?(.success(.purchased(transaction: Internal.PaymentTransaction(transaction))))
+                handle(transaction: transaction, handler: handler)
             case .failure(let error):
                 handler?(.failure(error))
             }
@@ -62,7 +62,7 @@ extension InAppPurchase {
         return fallbackHandler
     }
 
-    internal static func handle(queue: SKPaymentQueue, transaction: SKPaymentTransaction, handler: InAppPurchase.PurchaseHandler?) {
+    internal static func handle(transaction: SKPaymentTransaction, handler: InAppPurchase.PurchaseHandler?) {
         switch transaction.transactionState {
         case .purchasing:
             // Do nothing

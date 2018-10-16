@@ -64,14 +64,13 @@ extension InAppPurchase: InAppPurchaseProvidable {
     }
 
     public func set(shouldAddStorePaymentHandler: ((_ product: Product) -> Bool)? = nil, handler: InAppPurchase.PurchaseHandler?) {
-        paymentProvider.set(shouldAddStorePaymentHandler: { [weak self] (queue, payment, product) -> Bool in
+        paymentProvider.set(shouldAddStorePaymentHandler: { [weak self] (_, payment, product) -> Bool in
             let shouldAddStorePayment = shouldAddStorePaymentHandler?(Internal.Product(product)) ?? false
             if shouldAddStorePayment {
-                self?.paymentProvider.addPaymentHandler(withProductIdentifier: payment.productIdentifier, handler: { (queue, result) in
+                self?.paymentProvider.addPaymentHandler(withProductIdentifier: payment.productIdentifier, handler: { (_, result) in
                     switch result {
                     case .success(let transaction):
                         InAppPurchase.handle(
-                            queue: queue,
                             transaction: transaction,
                             handler: handler
                         )
@@ -127,11 +126,10 @@ extension InAppPurchase: InAppPurchaseProvidable {
 
                 // Add payment to App Store queue
                 let payment = SKPayment(product: product)
-                self?.paymentProvider.add(payment: payment, handler: { (queue, result) in
+                self?.paymentProvider.add(payment: payment, handler: { (_, result) in
                     switch result {
                     case .success(let transaction):
                         InAppPurchase.handle(
-                            queue: queue,
                             transaction: transaction,
                             handler: handler
                         )
