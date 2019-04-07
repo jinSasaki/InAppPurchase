@@ -11,9 +11,9 @@ import StoreKit
 @testable import InAppPurchase
 
 final class StubProductProvider: ProductProvidable {
-    private let _result: InAppPurchase.Result<[SKProduct]>
+    private let _result: Result<[SKProduct], InAppPurchase.Error>
 
-    init(result: InAppPurchase.Result<[SKProduct]> = .success([])) {
+    init(result: Result<[SKProduct], InAppPurchase.Error> = .success([])) {
         self._result = result
     }
 
