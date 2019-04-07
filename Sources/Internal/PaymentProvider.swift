@@ -92,6 +92,8 @@ extension PaymentProvider: SKPaymentTransactionObserver {
                 break
             case .purchased, .failed, .restored:
                 queue.finishTransaction(transaction)
+            @unknown default:
+                break
             }
 
             dispatchQueue.async {

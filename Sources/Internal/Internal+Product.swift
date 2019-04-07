@@ -72,6 +72,8 @@ extension PeriodUnit {
         case .week: self = .week
         case .month: self = .month
         case .year: self = .year
+        @unknown default:
+            self = .day
         }
     }
 }

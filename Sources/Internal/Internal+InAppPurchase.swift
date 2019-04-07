@@ -75,6 +75,8 @@ extension InAppPurchase {
             handler?(.success(.deferred))
         case .failed:
             handler?(.failure(InAppPurchase.Error(error: transaction.error)))
+        @unknown default:
+            break
         }
     }
 }
