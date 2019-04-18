@@ -76,6 +76,7 @@ extension InAppPurchase {
         case .failed:
             handler?(.failure(InAppPurchase.Error(error: transaction.error)))
         @unknown default:
+            // Do nothing
             break
         }
     }
