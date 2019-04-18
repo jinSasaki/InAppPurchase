@@ -16,13 +16,13 @@ public protocol InAppPurchaseProvidable {
     func set(shouldAddStorePaymentHandler: ((_ product: Product) -> Bool)?, handler: InAppPurchase.PurchaseHandler?)
     func addTransactionObserver(fallbackHandler: InAppPurchase.PurchaseHandler?)
     func removeTransactionObserver()
-    func fetchProduct(productIdentifiers: Set<String>, handler: ((_ result: InAppPurchase.Result<[Product]>) -> Void)?)
-    func restore(handler: ((_ result: InAppPurchase.Result<Void>) -> Void)?)
+    func fetchProduct(productIdentifiers: Set<String>, handler: ((_ result: Result<[Product], InAppPurchase.Error>) -> Void)?)
+    func restore(handler: ((_ result: Result<Void, InAppPurchase.Error>) -> Void)?)
     func purchase(productIdentifier: String, handler: InAppPurchase.PurchaseHandler?)
 }
 
 final public class InAppPurchase {
-    public typealias PurchaseHandler = (_ result: InAppPurchase.Result<PaymentState>) -> Void
+    public typealias PurchaseHandler = (_ result: Result<PaymentState, InAppPurchase.Error>) -> Void
 
     public enum Error: Swift.Error {
         case emptyProducts
@@ -33,11 +33,6 @@ final public class InAppPurchase {
         case storeTrouble
         case with(error: Swift.Error)
         case unknown
-    }
-
-    public enum Result<T> {
-        case success(T)
-        case failure(InAppPurchase.Error)
     }
 
     public enum PaymentState {
@@ -92,7 +87,7 @@ extension InAppPurchase: InAppPurchaseProvidable {
         paymentProvider.removeTransactionObserver()
     }
 
-    public func fetchProduct(productIdentifiers: Set<String>, handler: ((_ result: InAppPurchase.Result<[Product]>) -> Void)? = nil) {
+    public func fetchProduct(productIdentifiers: Set<String>, handler: ((_ result: Result<[Product], InAppPurchase.Error>) -> Void)? = nil) {
         productProvider.fetch(productIdentifiers: productIdentifiers, requestId: UUID().uuidString) { (result) in
             switch result {
             case .success(let products):
@@ -103,7 +98,7 @@ extension InAppPurchase: InAppPurchaseProvidable {
         }
     }
 
-    public func restore(handler: ((_ result: InAppPurchase.Result<Void>) -> Void)?) {
+    public func restore(handler: ((_ result: Result<Void, InAppPurchase.Error>) -> Void)?) {
         paymentProvider.restoreCompletedTransactions { (_, error) in
             if let error = error {
                 handler?(.failure(error))

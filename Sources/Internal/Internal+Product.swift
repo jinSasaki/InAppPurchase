@@ -56,9 +56,12 @@ extension Internal {
         let unit: PeriodUnit
 
         @available(iOS 11.2, *)
-        init(_ period: SKProductSubscriptionPeriod) {
+        init?(_ period: SKProductSubscriptionPeriod) {
+            guard let unit = PeriodUnit(period.unit) else {
+                return nil
+            }
             self.numberOfUnits = period.numberOfUnits
-            self.unit = PeriodUnit(period.unit)
+            self.unit = unit
         }
     }
 }
@@ -66,12 +69,13 @@ extension Internal.ProductSubscriptionPeriod: ProductSubscriptionPeriod {}
 
 extension PeriodUnit {
     @available(iOS 11.2, *)
-    init(_ unit: SKProduct.PeriodUnit) {
+    init?(_ unit: SKProduct.PeriodUnit) {
         switch unit {
         case .day: self = .day
         case .week: self = .week
         case .month: self = .month
         case .year: self = .year
+        @unknown default: return nil
         }
     }
 }

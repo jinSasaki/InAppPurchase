@@ -13,16 +13,16 @@ final class StubInAppPurchase: InAppPurchaseProvidable {
     private let _setShouldAddStorePayementHandler: ((_ shouldAddStorePaymentHandler: ((Product) -> Bool)?, _ handler: InAppPurchase.PurchaseHandler?) -> Void)?
     private let _addTransactionObserverHandler: ((_ fallbackHandler: InAppPurchase.PurchaseHandler?) -> Void)?
     private let _removeTransactionObserverHandler: (() -> Void)?
-    private let _fetchProductHandler: ((_ productIdentifiers: Set<String>, _ handler: ((_ result: InAppPurchase.Result<[Product]>) -> Void)?) -> Void)?
-    private let _restoreHandler: ((_ handler: ((_ result: InAppPurchase.Result<Void>) -> Void)?) -> Void)?
+    private let _fetchProductHandler: ((_ productIdentifiers: Set<String>, _ handler: ((_ result: Result<[Product], InAppPurchase.Error>) -> Void)?) -> Void)?
+    private let _restoreHandler: ((_ handler: ((_ result: Result<Void, InAppPurchase.Error>) -> Void)?) -> Void)?
     private let _purchaseHandler: ((_ productIdentifier: String, _ handler: InAppPurchase.PurchaseHandler?) -> Void)?
 
     init(canMakePayments: Bool = true,
          setShouldAddStorePayementHandler: ((_ shouldAddStorePaymentHandler: ((Product) -> Bool)?, _ handler: InAppPurchase.PurchaseHandler?) -> Void)? = nil,
          addTransactionObserverHandler: ((_ fallbackHandler: InAppPurchase.PurchaseHandler?) -> Void)? = nil,
          removeTransactionObserverHandler: (() -> Void)? = nil,
-         fetchProductHandler: ((_ productIdentifiers: Set<String>, _ handler: ((_ result: InAppPurchase.Result<[Product]>) -> Void)?) -> Void)? = nil,
-         restoreHandler: ((_ handler: ((_ result: InAppPurchase.Result<Void>) -> Void)?) -> Void)? = nil,
+         fetchProductHandler: ((_ productIdentifiers: Set<String>, _ handler: ((_ result: Result<[Product], InAppPurchase.Error>) -> Void)?) -> Void)? = nil,
+         restoreHandler: ((_ handler: ((_ result: Result<Void, InAppPurchase.Error>) -> Void)?) -> Void)? = nil,
          purchaseHandler: ((_ productIdentifier: String, _ handler: InAppPurchase.PurchaseHandler?) -> Void)? = nil) {
 
         self._canMakePayments = canMakePayments
@@ -50,11 +50,11 @@ final class StubInAppPurchase: InAppPurchaseProvidable {
         _removeTransactionObserverHandler?()
     }
 
-    func fetchProduct(productIdentifiers: Set<String>, handler: ((_ result: InAppPurchase.Result<[Product]>) -> Void)?) {
+    func fetchProduct(productIdentifiers: Set<String>, handler: ((_ result: Result<[Product], InAppPurchase.Error>) -> Void)?) {
         _fetchProductHandler?(productIdentifiers, handler)
     }
 
-    func restore(handler: ((_ result: InAppPurchase.Result<Void>) -> Void)?) {
+    func restore(handler: ((_ result: Result<Void, InAppPurchase.Error>) -> Void)?) {
         _restoreHandler?(handler)
     }
 

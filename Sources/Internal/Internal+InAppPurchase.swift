@@ -8,8 +8,8 @@
 
 import StoreKit
 
-internal typealias ProductHandler = (_ result: InAppPurchase.Result<[SKProduct]>) -> Void
-internal typealias PaymentHandler = (_ queue: SKPaymentQueue, _ result: InAppPurchase.Result<SKPaymentTransaction>) -> Void
+internal typealias ProductHandler = (_ result: Result<[SKProduct], InAppPurchase.Error>) -> Void
+internal typealias PaymentHandler = (_ queue: SKPaymentQueue, _ result: Result<SKPaymentTransaction, InAppPurchase.Error>) -> Void
 internal typealias RestoreHandler = (_ queue: SKPaymentQueue, _ error: InAppPurchase.Error?) -> Void
 internal typealias ShouldAddStorePaymentHandler = (_ queue: SKPaymentQueue, _ payment: SKPayment, _ product: SKProduct) -> Bool
 
@@ -75,6 +75,9 @@ extension InAppPurchase {
             handler?(.success(.deferred))
         case .failed:
             handler?(.failure(InAppPurchase.Error(error: transaction.error)))
+        @unknown default:
+            // Do nothing
+            break
         }
     }
 }
