@@ -38,7 +38,7 @@ final public class InAppPurchase {
     public enum PaymentState {
         case purchased(transaction: PaymentTransaction)
         case deferred
-        case restored
+        case restored(transaction: PaymentTransaction)
     }
 
     public static let `default` = InAppPurchase()
@@ -160,7 +160,7 @@ extension InAppPurchase.PaymentState: Equatable {
         switch (lhs, rhs) {
         case (.purchased(let transaction1), .purchased(let transaction2)): return transaction1.transactionIdentifier == transaction2.transactionIdentifier
         case (.deferred, .deferred): return true
-        case (.restored, .restored): return true
+        case (.restored(let transaction1), .restored(let transaction2)): return transaction1.transactionIdentifier == transaction2.transactionIdentifier
         default: return false
         }
     }

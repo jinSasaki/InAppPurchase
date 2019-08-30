@@ -70,7 +70,7 @@ extension InAppPurchase {
         case .purchased:
             handler?(.success(.purchased(transaction: Internal.PaymentTransaction(transaction))))
         case .restored:
-            handler?(.success(.restored))
+            handler?(.success(.restored(transaction: Internal.PaymentTransaction(transaction))))
         case .deferred:
             handler?(.success(.deferred))
         case .failed:
