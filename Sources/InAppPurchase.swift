@@ -38,7 +38,7 @@ final public class InAppPurchase {
     public enum PaymentState {
         case purchased(transaction: PaymentTransaction)
         case deferred
-        case restored
+        case restored(transaction: PaymentTransaction)
     }
 
     public static let `default` = InAppPurchase()
