@@ -17,7 +17,7 @@ public protocol InAppPurchaseProvidable {
     func addTransactionObserver(fallbackHandler: InAppPurchase.PurchaseHandler?)
     func removeTransactionObserver()
     func fetchProduct(productIdentifiers: Set<String>, handler: ((_ result: Result<[Product], InAppPurchase.Error>) -> Void)?)
-    func restore(handler: ((_ result: Result<Void, InAppPurchase.Error>) -> Void)?)
+    func restore(handler: ((_ result: Result<Set<String>, InAppPurchase.Error>) -> Void)?)
     func purchase(productIdentifier: String, handler: InAppPurchase.PurchaseHandler?)
 }
 
@@ -98,13 +98,17 @@ extension InAppPurchase: InAppPurchaseProvidable {
         }
     }
 
-    public func restore(handler: ((_ result: Result<Void, InAppPurchase.Error>) -> Void)?) {
-        paymentProvider.restoreCompletedTransactions { (_, error) in
+    public func restore(handler: ((_ result: Result<Set<String>, InAppPurchase.Error>) -> Void)?) {
+        paymentProvider.restoreCompletedTransactions { (queue, error) in
             if let error = error {
                 handler?(.failure(error))
                 return
             }
-            handler?(.success(()))
+            let productIds = queue
+                .transactions
+                .filter({ $0.transactionState == .restored })
+                .map({ $0.payment.productIdentifier })
+            handler?(.success(Set<String>(productIds)))
         }
     }
 

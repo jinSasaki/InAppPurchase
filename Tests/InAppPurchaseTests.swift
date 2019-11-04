@@ -245,7 +245,22 @@ class InAppPurchaseTests: XCTestCase {
     func testRestore() {
         let expectation = self.expectation()
         let productProvider = StubProductProvider()
-        let queue = StubPaymentQueue()
+        let payment = StubPayment(productIdentifier: "PRODUCT_001")
+        let transaction1 = StubPaymentTransaction(
+            transactionIdentifier: "TRANSACTION_001",
+            transactionState: .restored,
+            original: nil,
+            payment: payment,
+            error: nil
+        )
+        let transaction2 = StubPaymentTransaction(
+            transactionIdentifier: "TRANSACTION_002",
+            transactionState: .purchased,
+            original: nil,
+            payment: payment,
+            error: nil
+        )
+        let queue = StubPaymentQueue(transactions: [transaction1, transaction2])
         let paymentProvider = StubPaymentProvider(restoreHandler: { (handler) in
             handler(queue, nil)
         })
@@ -253,9 +268,8 @@ class InAppPurchaseTests: XCTestCase {
         let iap = InAppPurchase(product: productProvider, payment: paymentProvider)
         iap.restore { (result) in
             switch result {
-            case .success:
-                // Do nothing, this is success.
-                break
+            case .success(let productIds):
+                XCTAssertEqual(productIds, ["PRODUCT_001"])
             case .failure:
                 XCTFail()
             }

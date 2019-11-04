@@ -118,17 +118,6 @@ class PaymentProviderTests: XCTestCase {
     func testRestore() {
         let restoreExpectation = self.expectation()
         let finishExepextation = self.expectation()
-        let queue = StubPaymentQueue(restoreCompletedTransactionsHandler: {
-            restoreExpectation.fulfill()
-        }, finishTransactionHandler: { _ in
-            finishExepextation.fulfill()
-        })
-        let provider = PaymentProvider(paymentQueue: queue)
-        let expectation = self.expectation()
-        provider.restoreCompletedTransactions { _, error in
-            XCTAssertNil(error)
-            expectation.fulfill()
-        }
         let payment = StubPayment(productIdentifier: "PAYMENT_001")
         let transaction = StubPaymentTransaction(
             transactionIdentifier: "TRANSACTION_001",
@@ -136,6 +125,22 @@ class PaymentProviderTests: XCTestCase {
             original: nil,
             payment: payment
         )
+        let queue = StubPaymentQueue(
+            transactions: [transaction],
+            restoreCompletedTransactionsHandler: {
+                restoreExpectation.fulfill()
+        },
+            finishTransactionHandler: { _ in
+                finishExepextation.fulfill()
+        })
+        let provider = PaymentProvider(paymentQueue: queue)
+        let expectation = self.expectation()
+        provider.restoreCompletedTransactions { queue, error in
+            XCTAssertNil(error)
+            XCTAssertEqual(queue.transactions.map({ $0.transactionIdentifier }), ["TRANSACTION_001"])
+            XCTAssertEqual(queue.transactions.map({ $0.payment.productIdentifier }), ["PAYMENT_001"])
+            expectation.fulfill()
+        }
         // Maybe updateTransactions is called and then restore completed method is called.
         provider.paymentQueue(queue, updatedTransactions: [transaction])
         provider.paymentQueueRestoreCompletedTransactionsFinished(queue)
