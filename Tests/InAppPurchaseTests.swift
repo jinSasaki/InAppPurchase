@@ -33,9 +33,9 @@ class InAppPurchaseTests: XCTestCase {
     }
 
     func testInAppPurchasePaymentStateEqutable() {
-        XCTAssertEqual(InAppPurchase.PaymentState.deferred, InAppPurchase.PaymentState.deferred)
-        XCTAssertEqual(InAppPurchase.PaymentState.restored, InAppPurchase.PaymentState.restored)
-        XCTAssertNotEqual(InAppPurchase.PaymentState.deferred, InAppPurchase.PaymentState.restored)
+        XCTAssertEqual(InAppPurchase.PaymentState.State.deferred, InAppPurchase.PaymentState.State.deferred)
+        XCTAssertEqual(InAppPurchase.PaymentState.State.restored, InAppPurchase.PaymentState.State.restored)
+        XCTAssertNotEqual(InAppPurchase.PaymentState.State.deferred, InAppPurchase.PaymentState.State.restored)
 
         let transaction1 = Internal.PaymentTransaction(StubPaymentTransaction(
             transactionIdentifier: "TRANSACTION_001",
@@ -55,8 +55,8 @@ class InAppPurchaseTests: XCTestCase {
             payment: StubPayment(productIdentifier: "PRODUCT_001"),
             error: nil
         ))
-        XCTAssertEqual(InAppPurchase.PaymentState.purchased(transaction: transaction1), InAppPurchase.PaymentState.purchased(transaction: transaction2))
-        XCTAssertNotEqual(InAppPurchase.PaymentState.purchased(transaction: transaction1), InAppPurchase.PaymentState.purchased(transaction: transaction3))
+        XCTAssertEqual(InAppPurchase.PaymentState(state: .purchased, transaction: transaction1), InAppPurchase.PaymentState(state: .purchased, transaction: transaction2))
+        XCTAssertNotEqual(InAppPurchase.PaymentState(state: .purchased, transaction: transaction1), InAppPurchase.PaymentState(state: .purchased, transaction: transaction3))
     }
 
     func testCanMakePayments() {
@@ -125,7 +125,7 @@ class InAppPurchaseTests: XCTestCase {
             handler: { (result) in
                 switch result {
                 case .success(let state):
-                    XCTAssertEqual(state, InAppPurchase.PaymentState.purchased(transaction: Internal.PaymentTransaction(transaction)))
+                    XCTAssertEqual(state, InAppPurchase.PaymentState(state: .purchased, transaction: Internal.PaymentTransaction(transaction)))
                 case .failure:
                     XCTFail()
                 }
@@ -245,7 +245,22 @@ class InAppPurchaseTests: XCTestCase {
     func testRestore() {
         let expectation = self.expectation()
         let productProvider = StubProductProvider()
-        let queue = StubPaymentQueue()
+        let payment = StubPayment(productIdentifier: "PRODUCT_001")
+        let transaction1 = StubPaymentTransaction(
+            transactionIdentifier: "TRANSACTION_001",
+            transactionState: .restored,
+            original: nil,
+            payment: payment,
+            error: nil
+        )
+        let transaction2 = StubPaymentTransaction(
+            transactionIdentifier: "TRANSACTION_002",
+            transactionState: .purchased,
+            original: nil,
+            payment: payment,
+            error: nil
+        )
+        let queue = StubPaymentQueue(transactions: [transaction1, transaction2])
         let paymentProvider = StubPaymentProvider(restoreHandler: { (handler) in
             handler(queue, nil)
         })
@@ -253,9 +268,8 @@ class InAppPurchaseTests: XCTestCase {
         let iap = InAppPurchase(product: productProvider, payment: paymentProvider)
         iap.restore { (result) in
             switch result {
-            case .success:
-                // Do nothing, this is success.
-                break
+            case .success(let productIds):
+                XCTAssertEqual(productIds, ["PRODUCT_001"])
             case .failure:
                 XCTFail()
             }
@@ -311,12 +325,9 @@ class InAppPurchaseTests: XCTestCase {
         iap.purchase(productIdentifier: "PRODUCT_001", handler: { (result) in
             switch result {
             case .success(let state):
-                if case let .purchased(transaction) = state {
-                    XCTAssertEqual(transaction.transactionIdentifier, "TRANSACTION_001")
-                    XCTAssertEqual(transaction.originalTransactionIdentifier, "ORIGINAL_TRANSACTION_001")
-                } else {
-                    XCTFail()
-                }
+                XCTAssertEqual(state.state, .purchased)
+                XCTAssertEqual(state.transaction.transactionIdentifier, "TRANSACTION_001")
+                XCTAssertEqual(state.transaction.originalTransactionIdentifier, "ORIGINAL_TRANSACTION_001")
             case .failure:
                 XCTFail()
             }
@@ -415,12 +426,9 @@ class InAppPurchaseTests: XCTestCase {
         let purchaseHandler: InAppPurchase.PurchaseHandler = { result in
             switch result {
             case .success(let state):
-                if case let .purchased(transaction) = state {
-                    XCTAssertEqual(transaction.transactionIdentifier, "TRANSACTION_001")
-                    XCTAssertEqual(transaction.originalTransactionIdentifier, "ORIGINAL_TRANSACTION_001")
-                } else {
-                    XCTFail()
-                }
+                XCTAssertEqual(state.state, .purchased)
+                XCTAssertEqual(state.transaction.transactionIdentifier, "TRANSACTION_001")
+                XCTAssertEqual(state.transaction.originalTransactionIdentifier, "ORIGINAL_TRANSACTION_001")
             default:
                 XCTFail()
             }
@@ -486,12 +494,9 @@ class InAppPurchaseTests: XCTestCase {
         InAppPurchase.handle(transaction: transaction, handler: { result in
             switch result {
             case .success(let state):
-                if case let .purchased(transaction) = state {
-                    XCTAssertEqual(transaction.transactionIdentifier, "TRANSACTION_001")
-                    XCTAssertEqual(transaction.originalTransactionIdentifier, "ORIGINAL_TRANSACTION_001")
-                } else {
-                    XCTFail()
-                }
+                XCTAssertEqual(state.state, .purchased)
+                XCTAssertEqual(state.transaction.originalTransactionIdentifier, "ORIGINAL_TRANSACTION_001")
+                XCTAssertEqual(state.transaction.originalTransactionIdentifier, "ORIGINAL_TRANSACTION_001")
             case .failure:
                 XCTFail()
             }
@@ -512,7 +517,7 @@ class InAppPurchaseTests: XCTestCase {
         InAppPurchase.handle(transaction: transaction, handler: { result in
             switch result {
             case .success(let state):
-                XCTAssertEqual(state, .restored)
+                XCTAssertEqual(state.state, .restored)
             case .failure:
                 XCTFail()
             }
@@ -533,7 +538,7 @@ class InAppPurchaseTests: XCTestCase {
         InAppPurchase.handle(transaction: transaction, handler: { result in
             switch result {
             case .success(let state):
-                XCTAssertEqual(state, .deferred)
+                XCTAssertEqual(state.state, .deferred)
             case .failure:
                 XCTFail()
             }

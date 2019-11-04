@@ -17,7 +17,7 @@ public protocol InAppPurchaseProvidable {
     func addTransactionObserver(fallbackHandler: InAppPurchase.PurchaseHandler?)
     func removeTransactionObserver()
     func fetchProduct(productIdentifiers: Set<String>, handler: ((_ result: Result<[Product], InAppPurchase.Error>) -> Void)?)
-    func restore(handler: ((_ result: Result<Void, InAppPurchase.Error>) -> Void)?)
+    func restore(handler: ((_ result: Result<Set<String>, InAppPurchase.Error>) -> Void)?)
     func purchase(productIdentifier: String, handler: InAppPurchase.PurchaseHandler?)
 }
 
@@ -35,10 +35,14 @@ final public class InAppPurchase {
         case unknown
     }
 
-    public enum PaymentState {
-        case purchased(transaction: PaymentTransaction)
-        case deferred
-        case restored
+    public struct PaymentState {
+        public enum State: Equatable {
+            case purchased
+            case deferred
+            case restored
+        }
+        let state: State
+        let transaction: PaymentTransaction
     }
 
     public static let `default` = InAppPurchase()
@@ -98,13 +102,17 @@ extension InAppPurchase: InAppPurchaseProvidable {
         }
     }
 
-    public func restore(handler: ((_ result: Result<Void, InAppPurchase.Error>) -> Void)?) {
-        paymentProvider.restoreCompletedTransactions { (_, error) in
+    public func restore(handler: ((_ result: Result<Set<String>, InAppPurchase.Error>) -> Void)?) {
+        paymentProvider.restoreCompletedTransactions { (queue, error) in
             if let error = error {
                 handler?(.failure(error))
                 return
             }
-            handler?(.success(()))
+            let productIds = queue
+                .transactions
+                .filter({ $0.transactionState == .restored })
+                .map({ $0.payment.productIdentifier })
+            handler?(.success(Set<String>(productIds)))
         }
     }
 
@@ -157,11 +165,6 @@ extension InAppPurchase.Error: Equatable {
 
 extension InAppPurchase.PaymentState: Equatable {
     public static func == (lhs: InAppPurchase.PaymentState, rhs: InAppPurchase.PaymentState) -> Bool {
-        switch (lhs, rhs) {
-        case (.purchased(let transaction1), .purchased(let transaction2)): return transaction1.transactionIdentifier == transaction2.transactionIdentifier
-        case (.deferred, .deferred): return true
-        case (.restored, .restored): return true
-        default: return false
-        }
+        return lhs.state == rhs.state && lhs.transaction.transactionIdentifier == rhs.transaction.transactionIdentifier
     }
 }

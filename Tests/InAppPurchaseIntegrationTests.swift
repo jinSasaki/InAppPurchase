@@ -29,7 +29,7 @@ final class InAppPurchaseIntegrationTests: XCTestCase {
         iap.addTransactionObserver(fallbackHandler: { (result) in
             switch result {
             case .success(let state):
-                switch state {
+                switch state.state {
                 case .purchased:
                     break
                 default:
@@ -43,7 +43,7 @@ final class InAppPurchaseIntegrationTests: XCTestCase {
         iap.purchase(productIdentifier: "PRODUCT_001") { (result) in
             switch result {
             case .success(let state):
-                XCTAssertEqual(state, .deferred)
+                XCTAssertEqual(state.state, .deferred)
             case .failure:
                 XCTFail()
             }
