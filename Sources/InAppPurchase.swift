@@ -35,10 +35,14 @@ final public class InAppPurchase {
         case unknown
     }
 
-    public enum PaymentState {
-        case purchased(transaction: PaymentTransaction)
-        case deferred
-        case restored
+    public struct PaymentState {
+        public enum State: Equatable {
+            case purchased
+            case deferred
+            case restored
+        }
+        let state: State
+        let transaction: PaymentTransaction
     }
 
     public static let `default` = InAppPurchase()
@@ -161,11 +165,6 @@ extension InAppPurchase.Error: Equatable {
 
 extension InAppPurchase.PaymentState: Equatable {
     public static func == (lhs: InAppPurchase.PaymentState, rhs: InAppPurchase.PaymentState) -> Bool {
-        switch (lhs, rhs) {
-        case (.purchased(let transaction1), .purchased(let transaction2)): return transaction1.transactionIdentifier == transaction2.transactionIdentifier
-        case (.deferred, .deferred): return true
-        case (.restored, .restored): return true
-        default: return false
-        }
+        return lhs.state == rhs.state && lhs.transaction.transactionIdentifier == rhs.transaction.transactionIdentifier
     }
 }

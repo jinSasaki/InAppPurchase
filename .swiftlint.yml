@@ -1,6 +1,7 @@
 excluded:
 disabled_rules:
   - xctfail_message
+  - nesting
 file_length:
   - 600 # warning
   - 1000 # error
