@@ -97,8 +97,8 @@ iap.fetchProduct(productIdentifiers: ["PRODUCT_ID"], handler: { (result) in
 let iap = InAppPurchase.default
 iap.restore(handler: { (result) in
     switch result {
-    case .success:
-        // Restored
+    case .success(let productIds):
+        // Restored with product ids
     case .failure(let error):
         // Handle `InAppPurchase.Error`
     }
