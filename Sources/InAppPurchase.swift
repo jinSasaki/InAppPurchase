@@ -41,8 +41,8 @@ final public class InAppPurchase {
             case deferred
             case restored
         }
-        let state: State
-        let transaction: PaymentTransaction
+        public let state: State
+        public let transaction: PaymentTransaction
     }
 
     public static let `default` = InAppPurchase()
