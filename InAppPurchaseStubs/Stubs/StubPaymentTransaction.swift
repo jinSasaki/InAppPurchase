@@ -8,8 +8,9 @@
 
 import Foundation
 import StoreKit
+import InAppPurchase
 
-public final class StubPaymentTransaction: SKPaymentTransaction {
+public final class StubPaymentTransaction: SKPaymentTransaction, PaymentTransaction {
     private let _transactionIdentifier: String?
     private let _transactionState: SKPaymentTransactionState
     private let _original: StubPaymentTransaction?
@@ -47,5 +48,13 @@ public final class StubPaymentTransaction: SKPaymentTransaction {
 
     public override var error: Error? {
         return _error
+    }
+
+    public var originalTransactionIdentifier: String? {
+        return _original?.transactionIdentifier
+    }
+
+    public var productIdentifier: String {
+        return _payment.productIdentifier
     }
 }
