@@ -9,6 +9,7 @@
 import XCTest
 @testable import InAppPurchase
 import StoreKit
+import InAppPurchaseStubs
 
 class ProductTests: XCTestCase {
     func testInit() {

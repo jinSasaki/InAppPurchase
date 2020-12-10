@@ -9,14 +9,14 @@
 import Foundation
 import StoreKit
 
-final class StubPaymentTransaction: SKPaymentTransaction {
+public final class StubPaymentTransaction: SKPaymentTransaction {
     private let _transactionIdentifier: String?
     private let _transactionState: SKPaymentTransactionState
     private let _original: StubPaymentTransaction?
     private let _payment: SKPayment
     private let _error: Error?
 
-    init(transactionIdentifier: String? = nil,
+    public init(transactionIdentifier: String? = nil,
          transactionState: SKPaymentTransactionState = .purchasing,
          original: StubPaymentTransaction? = nil,
          payment: SKPayment = StubPayment(productIdentifier: ""),
@@ -29,23 +29,23 @@ final class StubPaymentTransaction: SKPaymentTransaction {
         self._error = error
     }
 
-    override var transactionIdentifier: String? {
+    public override var transactionIdentifier: String? {
         return _transactionIdentifier
     }
 
-    override var transactionState: SKPaymentTransactionState {
+    public override var transactionState: SKPaymentTransactionState {
         return _transactionState
     }
 
-    override var original: SKPaymentTransaction? {
+    public override var original: SKPaymentTransaction? {
         return _original
     }
 
-    override var payment: SKPayment {
+    public override var payment: SKPayment {
         return _payment
     }
 
-    override var error: Error? {
+    public override var error: Error? {
         return _error
     }
 }

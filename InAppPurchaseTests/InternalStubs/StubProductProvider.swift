@@ -10,14 +10,14 @@ import Foundation
 import StoreKit
 @testable import InAppPurchase
 
-final class StubProductProvider: ProductProvidable {
+public final class StubProductProvider: ProductProvidable {
     private let _result: Result<[SKProduct], InAppPurchase.Error>
 
-    init(result: Result<[SKProduct], InAppPurchase.Error> = .success([])) {
+    public init(result: Result<[SKProduct], InAppPurchase.Error> = .success([])) {
         self._result = result
     }
 
-    func fetch(productIdentifiers: Set<String>, requestId: String, handler: @escaping ProductHandler) {
+    public func fetch(productIdentifiers: Set<String>, requestId: String, handler: @escaping ProductHandler) {
         handler(_result)
     }
 }

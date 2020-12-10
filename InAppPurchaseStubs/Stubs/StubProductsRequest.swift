@@ -9,15 +9,15 @@
 import Foundation
 import StoreKit
 
-final class StubProductsRequest: SKProductsRequest {
+public final class StubProductsRequest: SKProductsRequest {
     private let _startHandler: () -> Void
 
-    init(startHandler: @escaping () -> Void) {
+    public init(startHandler: @escaping () -> Void) {
         self._startHandler = startHandler
         super.init()
     }
 
-    override func start() {
+    public override func start() {
         _startHandler()
     }
 }
