@@ -576,6 +576,46 @@ class InAppPurchaseTests: XCTestCase {
         })
         wait(for: [expectation], timeout: 1)
     }
+
+    func testRefreshReceipt() {
+        let receiptRefreshProvider = StubReceiptRefreshProvider(result: .success(()))
+        let expectation = self.expectation()
+        let iap = InAppPurchase(receiptRefresh: receiptRefreshProvider)
+        iap.refreshReceipt(handler: { (result) in
+            switch result {
+            case .success:
+                XCTAssert(true)
+            case .failure:
+                XCTFail()
+            }
+            expectation.fulfill()
+
+        })
+        wait(for: [expectation], timeout: 1)
+    }
+
+    func testRefreshReceiptWhereFailure() {
+        let receiptRefreshProvider = StubReceiptRefreshProvider(result: .failure(.storeTrouble))
+        let expectation = self.expectation()
+        let iap = InAppPurchase(receiptRefresh: receiptRefreshProvider)
+        iap.refreshReceipt(handler: { (result) in
+            switch result {
+            case .success:
+                XCTFail()
+            case .failure(let error):
+                let expression: Bool
+                if case .storeTrouble = error {
+                    expression = true
+                } else {
+                    expression = false
+                }
+                XCTAssertTrue(expression)
+            }
+            expectation.fulfill()
+
+        })
+        wait(for: [expectation], timeout: 1)
+    }
 }
 
 extension XCTestCase {

@@ -16,6 +16,7 @@ final class StubInAppPurchase: InAppPurchaseProvidable {
     private let _fetchProductHandler: ((_ productIdentifiers: Set<String>, _ handler: ((_ result: Result<[Product], InAppPurchase.Error>) -> Void)?) -> Void)?
     private let _restoreHandler: ((_ handler: ((_ result: Result<Set<String>, InAppPurchase.Error>) -> Void)?) -> Void)?
     private let _purchaseHandler: ((_ productIdentifier: String, _ handler: InAppPurchase.PurchaseHandler?) -> Void)?
+    private let _receiptRefreshHandler: ((_ handler: InAppPurchase.ReceiptRefreshHandler?) -> Void)?
 
     init(canMakePayments: Bool = true,
          setShouldAddStorePayementHandler: ((_ shouldAddStorePaymentHandler: ((Product) -> Bool)?, _ handler: InAppPurchase.PurchaseHandler?) -> Void)? = nil,
@@ -23,7 +24,8 @@ final class StubInAppPurchase: InAppPurchaseProvidable {
          removeTransactionObserverHandler: (() -> Void)? = nil,
          fetchProductHandler: ((_ productIdentifiers: Set<String>, _ handler: ((_ result: Result<[Product], InAppPurchase.Error>) -> Void)?) -> Void)? = nil,
          restoreHandler: ((_ handler: ((_ result: Result<Set<String>, InAppPurchase.Error>) -> Void)?) -> Void)? = nil,
-         purchaseHandler: ((_ productIdentifier: String, _ handler: InAppPurchase.PurchaseHandler?) -> Void)? = nil) {
+         purchaseHandler: ((_ productIdentifier: String, _ handler: InAppPurchase.PurchaseHandler?) -> Void)? = nil,
+         refreshReceiptHandler: ((_ handler: InAppPurchase.ReceiptRefreshHandler?) -> Void)? = nil) {
 
         self._canMakePayments = canMakePayments
         self._setShouldAddStorePayementHandler = setShouldAddStorePayementHandler
@@ -32,6 +34,7 @@ final class StubInAppPurchase: InAppPurchaseProvidable {
         self._fetchProductHandler = fetchProductHandler
         self._restoreHandler = restoreHandler
         self._purchaseHandler = purchaseHandler
+        self._receiptRefreshHandler = refreshReceiptHandler
     }
 
     func canMakePayments() -> Bool {
@@ -60,5 +63,9 @@ final class StubInAppPurchase: InAppPurchaseProvidable {
 
     func purchase(productIdentifier: String, handler: InAppPurchase.PurchaseHandler?) {
         _purchaseHandler?(productIdentifier, handler)
+    }
+
+    func refreshReceipt(handler: InAppPurchase.ReceiptRefreshHandler?) {
+        _receiptRefreshHandler?(handler)
     }
 }

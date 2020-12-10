@@ -12,6 +12,7 @@ internal typealias ProductHandler = (_ result: Result<[SKProduct], InAppPurchase
 internal typealias PaymentHandler = (_ queue: SKPaymentQueue, _ result: Result<SKPaymentTransaction, InAppPurchase.Error>) -> Void
 internal typealias RestoreHandler = (_ queue: SKPaymentQueue, _ error: InAppPurchase.Error?) -> Void
 internal typealias ShouldAddStorePaymentHandler = (_ queue: SKPaymentQueue, _ payment: SKPayment, _ product: SKProduct) -> Bool
+internal typealias ReceiptRefreshHandler = (Result<Void, InAppPurchase.Error>) -> Void
 
 internal protocol ProductProvidable {
     func fetch(productIdentifiers: Set<String>, requestId: String, handler: @escaping ProductHandler)
@@ -27,6 +28,11 @@ internal protocol PaymentProvidable {
     func set(shouldAddStorePaymentHandler: @escaping ShouldAddStorePaymentHandler)
     func set(fallbackHandler: @escaping PaymentHandler)
 }
+
+internal protocol ReceiptRefreshProvidable {
+    func refresh(requestId: String, handler: @escaping ReceiptRefreshHandler)
+}
+
 extension InAppPurchase.Error {
     internal init(error: Swift.Error?) {
         switch (error as? SKError)?.code {

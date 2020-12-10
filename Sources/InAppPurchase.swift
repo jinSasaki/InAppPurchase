@@ -19,10 +19,12 @@ public protocol InAppPurchaseProvidable {
     func fetchProduct(productIdentifiers: Set<String>, handler: ((_ result: Result<[Product], InAppPurchase.Error>) -> Void)?)
     func restore(handler: ((_ result: Result<Set<String>, InAppPurchase.Error>) -> Void)?)
     func purchase(productIdentifier: String, handler: InAppPurchase.PurchaseHandler?)
+    func refreshReceipt(handler: InAppPurchase.ReceiptRefreshHandler?)
 }
 
 final public class InAppPurchase {
     public typealias PurchaseHandler = (_ result: Result<PaymentState, InAppPurchase.Error>) -> Void
+    public typealias ReceiptRefreshHandler = (_ result: Result<Void, InAppPurchase.Error>) -> Void
 
     public enum Error: Swift.Error {
         case emptyProducts
@@ -49,10 +51,14 @@ final public class InAppPurchase {
 
     fileprivate let productProvider: ProductProvidable
     fileprivate let paymentProvider: PaymentProvidable
+    fileprivate let receiptRefreshProvider: ReceiptRefreshProvidable
 
-    internal init(product: ProductProvidable = ProductProvider(), payment: PaymentProvidable = PaymentProvider()) {
+    internal init(product: ProductProvidable = ProductProvider(),
+                  payment: PaymentProvidable = PaymentProvider(),
+                  receiptRefresh: ReceiptRefreshProvidable = ReceiptRefreshProvider()) {
         self.productProvider = product
         self.paymentProvider = payment
+        self.receiptRefreshProvider = receiptRefresh
     }
 }
 
@@ -140,6 +146,18 @@ extension InAppPurchase: InAppPurchaseProvidable {
                         handler?(.failure(error))
                     }
                 })
+            case .failure(let error):
+                handler?(.failure(error))
+            }
+        }
+    }
+
+    public func refreshReceipt(handler: InAppPurchase.ReceiptRefreshHandler?) {
+        let requestId = UUID().uuidString
+        receiptRefreshProvider.refresh(requestId: requestId) { (result) in
+            switch result {
+            case .success:
+                handler?(.success(()))
             case .failure(let error):
                 handler?(.failure(error))
             }
