@@ -17,10 +17,10 @@ public final class StubPaymentTransaction: SKPaymentTransaction {
     private let _error: Error?
 
     public init(transactionIdentifier: String? = nil,
-         transactionState: SKPaymentTransactionState = .purchasing,
-         original: StubPaymentTransaction? = nil,
-         payment: SKPayment = StubPayment(productIdentifier: ""),
-         error: Error? = nil) {
+                transactionState: SKPaymentTransactionState = .purchasing,
+                original: StubPaymentTransaction? = nil,
+                payment: SKPayment = StubPayment(productIdentifier: ""),
+                error: Error? = nil) {
 
         self._transactionIdentifier = transactionIdentifier
         self._transactionState = transactionState
