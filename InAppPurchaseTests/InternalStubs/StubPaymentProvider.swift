@@ -21,13 +21,13 @@ public final class StubPaymentProvider: PaymentProvidable {
     private let _fallbackHandler: ((_ fallbackHandler: @escaping PaymentHandler) -> Void)?
 
     public init(canMakePayments: Bool = true,
-         addTransactionObserverHandler: (() -> Void)? = nil,
-         removeTransactionObserverHandler: (() -> Void)? = nil,
-         restoreHandler: ((_ handler: @escaping RestoreHandler) -> Void)? = nil,
-         addPaymentHandler: ((_ payment: SKPayment, _ handler: @escaping PaymentHandler) -> Void)? = nil,
-         addProductIdentifierHandler: ((_ productIdentifier: String, _ handler: @escaping PaymentHandler) -> Void)? = nil,
-         setShouldAddStorePaymentHandler: ((@escaping ShouldAddStorePaymentHandler) -> Void)? = nil,
-         fallbackHandler: ((_ fallbackHandler: @escaping PaymentHandler) -> Void)? = nil) {
+                addTransactionObserverHandler: (() -> Void)? = nil,
+                removeTransactionObserverHandler: (() -> Void)? = nil,
+                restoreHandler: ((_ handler: @escaping RestoreHandler) -> Void)? = nil,
+                addPaymentHandler: ((_ payment: SKPayment, _ handler: @escaping PaymentHandler) -> Void)? = nil,
+                addProductIdentifierHandler: ((_ productIdentifier: String, _ handler: @escaping PaymentHandler) -> Void)? = nil,
+                setShouldAddStorePaymentHandler: ((@escaping ShouldAddStorePaymentHandler) -> Void)? = nil,
+                fallbackHandler: ((_ fallbackHandler: @escaping PaymentHandler) -> Void)? = nil) {
 
         self._canMakePayments = canMakePayments
         self._addTransactionObserverHandler = addTransactionObserverHandler

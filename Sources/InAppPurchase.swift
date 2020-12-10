@@ -23,7 +23,7 @@ public protocol InAppPurchaseProvidable {
 }
 
 final public class InAppPurchase {
-    public typealias PurchaseHandler = (_ result: Result<PaymentState, InAppPurchase.Error>) -> Void
+    public typealias PurchaseHandler = (_ result: Result<PaymentResponse, InAppPurchase.Error>) -> Void
     public typealias ReceiptRefreshHandler = (_ result: Result<Void, InAppPurchase.Error>) -> Void
 
     public enum Error: Swift.Error {
@@ -35,16 +35,6 @@ final public class InAppPurchase {
         case storeTrouble
         case with(error: Swift.Error)
         case unknown
-    }
-
-    public struct PaymentState {
-        public enum State: Equatable {
-            case purchased
-            case deferred
-            case restored
-        }
-        public let state: State
-        public let transaction: PaymentTransaction
     }
 
     public static let `default` = InAppPurchase()
@@ -178,11 +168,5 @@ extension InAppPurchase.Error: Equatable {
         case (.unknown, .unknown): return true
         default: return false
         }
-    }
-}
-
-extension InAppPurchase.PaymentState: Equatable {
-    public static func == (lhs: InAppPurchase.PaymentState, rhs: InAppPurchase.PaymentState) -> Bool {
-        return lhs.state == rhs.state && lhs.transaction.transactionIdentifier == rhs.transaction.transactionIdentifier
     }
 }

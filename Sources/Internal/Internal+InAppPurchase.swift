@@ -74,11 +74,11 @@ extension InAppPurchase {
             // Do nothing
             break
         case .purchased:
-            handler?(.success(.init(state: .purchased, transaction: Internal.PaymentTransaction(transaction))))
+            handler?(.success(Internal.PaymentResponse(state: .purchased, transaction: Internal.PaymentTransaction(transaction))))
         case .restored:
-            handler?(.success(.init(state: .restored, transaction: Internal.PaymentTransaction(transaction))))
+            handler?(.success(Internal.PaymentResponse(state: .restored, transaction: Internal.PaymentTransaction(transaction))))
         case .deferred:
-            handler?(.success(.init(state: .deferred, transaction: Internal.PaymentTransaction(transaction))))
+            handler?(.success(Internal.PaymentResponse(state: .deferred, transaction: Internal.PaymentTransaction(transaction))))
         case .failed:
             handler?(.failure(InAppPurchase.Error(error: transaction.error)))
         @unknown default:

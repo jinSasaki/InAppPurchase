@@ -34,9 +34,9 @@ class InAppPurchaseTests: XCTestCase {
     }
 
     func testInAppPurchasePaymentStateEqutable() {
-        XCTAssertEqual(InAppPurchase.PaymentState.State.deferred, InAppPurchase.PaymentState.State.deferred)
-        XCTAssertEqual(InAppPurchase.PaymentState.State.restored, InAppPurchase.PaymentState.State.restored)
-        XCTAssertNotEqual(InAppPurchase.PaymentState.State.deferred, InAppPurchase.PaymentState.State.restored)
+        XCTAssertEqual(PaymentState.deferred, PaymentState.deferred)
+        XCTAssertEqual(PaymentState.restored, PaymentState.restored)
+        XCTAssertNotEqual(PaymentState.deferred, PaymentState.restored)
 
         let transaction1 = Internal.PaymentTransaction(StubPaymentTransaction(
             transactionIdentifier: "TRANSACTION_001",
@@ -56,8 +56,8 @@ class InAppPurchaseTests: XCTestCase {
             payment: StubPayment(productIdentifier: "PRODUCT_001"),
             error: nil
         ))
-        XCTAssertEqual(InAppPurchase.PaymentState(state: .purchased, transaction: transaction1), InAppPurchase.PaymentState(state: .purchased, transaction: transaction2))
-        XCTAssertNotEqual(InAppPurchase.PaymentState(state: .purchased, transaction: transaction1), InAppPurchase.PaymentState(state: .purchased, transaction: transaction3))
+        XCTAssertEqual(Internal.PaymentResponse(state: .purchased, transaction: transaction1), Internal.PaymentResponse(state: .purchased, transaction: transaction2))
+        XCTAssertNotEqual(Internal.PaymentResponse(state: .purchased, transaction: transaction1), Internal.PaymentResponse(state: .purchased, transaction: transaction3))
     }
 
     func testCanMakePayments() {
@@ -125,8 +125,10 @@ class InAppPurchaseTests: XCTestCase {
             shouldAddStorePaymentHandler: { _ -> Bool in return true },
             handler: { (result) in
                 switch result {
-                case .success(let state):
-                    XCTAssertEqual(state, InAppPurchase.PaymentState(state: .purchased, transaction: Internal.PaymentTransaction(transaction)))
+                case .success(let response):
+                    let expected = Internal.PaymentResponse(state: .purchased, transaction: Internal.PaymentTransaction(transaction))
+                    XCTAssertEqual(response.state, expected.state)
+                    XCTAssertEqual(response.transaction.transactionIdentifier, expected.transaction.transactionIdentifier)
                 case .failure:
                     XCTFail()
                 }

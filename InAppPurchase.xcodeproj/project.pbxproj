@@ -27,6 +27,9 @@
 		93396B0025825CD0006ABE59 /* StubProductsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 938BFAAB1F5E86ED006A4C2A /* StubProductsResponse.swift */; };
 		93396B0125825CD0006ABE59 /* StubSubscriptionPeriod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933BE10220D4A381002AA195 /* StubSubscriptionPeriod.swift */; };
 		93396B0225825D28006ABE59 /* InAppPurchaseStubs.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93396ADA25825467006ABE59 /* InAppPurchaseStubs.framework */; };
+		93396B062582894F006ABE59 /* PaymentResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93396B052582894F006ABE59 /* PaymentResponse.swift */; };
+		93396B0825828988006ABE59 /* PaymentState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93396B0725828988006ABE59 /* PaymentState.swift */; };
+		93396B0A25828BE6006ABE59 /* StubPaymentResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93396B0925828BE6006ABE59 /* StubPaymentResponse.swift */; };
 		938BFA7A1F5E8411006A4C2A /* InAppPurchase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 938BFA701F5E8411006A4C2A /* InAppPurchase.framework */; };
 		938BFA811F5E8411006A4C2A /* InAppPurchase.h in Headers */ = {isa = PBXBuildFile; fileRef = 938BFA731F5E8411006A4C2A /* InAppPurchase.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		938BFA981F5E856D006A4C2A /* PaymentProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 938BFA941F5E856D006A4C2A /* PaymentProvider.swift */; };
@@ -86,6 +89,9 @@
 		93396ADA25825467006ABE59 /* InAppPurchaseStubs.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = InAppPurchaseStubs.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		93396ADC25825467006ABE59 /* InAppPurchaseStubs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = InAppPurchaseStubs.h; sourceTree = "<group>"; };
 		93396ADD25825467006ABE59 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		93396B052582894F006ABE59 /* PaymentResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentResponse.swift; sourceTree = "<group>"; };
+		93396B0725828988006ABE59 /* PaymentState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentState.swift; sourceTree = "<group>"; };
+		93396B0925828BE6006ABE59 /* StubPaymentResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StubPaymentResponse.swift; sourceTree = "<group>"; };
 		933BE10220D4A381002AA195 /* StubSubscriptionPeriod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StubSubscriptionPeriod.swift; sourceTree = "<group>"; };
 		938BFA701F5E8411006A4C2A /* InAppPurchase.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = InAppPurchase.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		938BFA731F5E8411006A4C2A /* InAppPurchase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = InAppPurchase.h; sourceTree = "<group>"; };
@@ -228,6 +234,8 @@
 			children = (
 				009BF76F21673357004CCBD7 /* Internal */,
 				938BFA971F5E856D006A4C2A /* InAppPurchase.swift */,
+				93396B052582894F006ABE59 /* PaymentResponse.swift */,
+				93396B0725828988006ABE59 /* PaymentState.swift */,
 				93C329771F5E8D8000F7A5E7 /* PaymentTransaction.swift */,
 				93C329751F5E8D6100F7A5E7 /* Product.swift */,
 			);
@@ -254,6 +262,7 @@
 				93C3297B1F5E8E2400F7A5E7 /* StubInAppPurchase.swift */,
 				938BFAA41F5E86ED006A4C2A /* StubPayment.swift */,
 				938BFAA61F5E86ED006A4C2A /* StubPaymentQueue.swift */,
+				93396B0925828BE6006ABE59 /* StubPaymentResponse.swift */,
 				938BFAA71F5E86ED006A4C2A /* StubPaymentTransaction.swift */,
 				938BFAA81F5E86ED006A4C2A /* StubProduct.swift */,
 				938BFAAA1F5E86ED006A4C2A /* StubProductsRequest.swift */,
@@ -452,6 +461,7 @@
 				93396AFA25825CD0006ABE59 /* StubInAppPurchase.swift in Sources */,
 				93396AFB25825CD0006ABE59 /* StubPayment.swift in Sources */,
 				93396AFC25825CD0006ABE59 /* StubPaymentQueue.swift in Sources */,
+				93396B0A25828BE6006ABE59 /* StubPaymentResponse.swift in Sources */,
 				93396AFD25825CD0006ABE59 /* StubPaymentTransaction.swift in Sources */,
 				93396AFE25825CD0006ABE59 /* StubProduct.swift in Sources */,
 				93396AFF25825CD0006ABE59 /* StubProductsRequest.swift in Sources */,
@@ -469,6 +479,8 @@
 				009BF77121673362004CCBD7 /* Internal+Product.swift in Sources */,
 				009BF76E21673160004CCBD7 /* Internal.swift in Sources */,
 				938BFA981F5E856D006A4C2A /* PaymentProvider.swift in Sources */,
+				93396B062582894F006ABE59 /* PaymentResponse.swift in Sources */,
+				93396B0825828988006ABE59 /* PaymentState.swift in Sources */,
 				93C329781F5E8D8000F7A5E7 /* PaymentTransaction.swift in Sources */,
 				93C329761F5E8D6100F7A5E7 /* Product.swift in Sources */,
 				938BFA991F5E856D006A4C2A /* ProductProvider.swift in Sources */,
