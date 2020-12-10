@@ -9,6 +9,7 @@
 import XCTest
 @testable import InAppPurchase
 import StoreKit
+import InAppPurchaseStubs
 
 final class ReceiptRefreshProviderTests: XCTestCase {
 

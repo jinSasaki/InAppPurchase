@@ -9,3 +9,5 @@ coverage:
     changes: no
 ignore:
   - Tests
+  - InAppPurchaseStubs
+  - InAppPurchaseTests

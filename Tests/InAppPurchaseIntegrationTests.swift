@@ -8,6 +8,7 @@
 
 import XCTest
 @testable import InAppPurchase
+import InAppPurchaseStubs
 
 final class InAppPurchaseIntegrationTests: XCTestCase {
 

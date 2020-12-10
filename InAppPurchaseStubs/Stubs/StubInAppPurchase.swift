@@ -6,9 +6,9 @@
 //  Copyright © 2017年 Jin Sasaki. All rights reserved.
 //
 
-@testable import InAppPurchase
+import InAppPurchase
 
-final class StubInAppPurchase: InAppPurchaseProvidable {
+public final class StubInAppPurchase: InAppPurchaseProvidable {
     private let _canMakePayments: Bool
     private let _setShouldAddStorePayementHandler: ((_ shouldAddStorePaymentHandler: ((Product) -> Bool)?, _ handler: InAppPurchase.PurchaseHandler?) -> Void)?
     private let _addTransactionObserverHandler: ((_ fallbackHandler: InAppPurchase.PurchaseHandler?) -> Void)?
@@ -18,14 +18,14 @@ final class StubInAppPurchase: InAppPurchaseProvidable {
     private let _purchaseHandler: ((_ productIdentifier: String, _ handler: InAppPurchase.PurchaseHandler?) -> Void)?
     private let _receiptRefreshHandler: ((_ handler: InAppPurchase.ReceiptRefreshHandler?) -> Void)?
 
-    init(canMakePayments: Bool = true,
-         setShouldAddStorePayementHandler: ((_ shouldAddStorePaymentHandler: ((Product) -> Bool)?, _ handler: InAppPurchase.PurchaseHandler?) -> Void)? = nil,
-         addTransactionObserverHandler: ((_ fallbackHandler: InAppPurchase.PurchaseHandler?) -> Void)? = nil,
-         removeTransactionObserverHandler: (() -> Void)? = nil,
-         fetchProductHandler: ((_ productIdentifiers: Set<String>, _ handler: ((_ result: Result<[Product], InAppPurchase.Error>) -> Void)?) -> Void)? = nil,
-         restoreHandler: ((_ handler: ((_ result: Result<Set<String>, InAppPurchase.Error>) -> Void)?) -> Void)? = nil,
-         purchaseHandler: ((_ productIdentifier: String, _ handler: InAppPurchase.PurchaseHandler?) -> Void)? = nil,
-         refreshReceiptHandler: ((_ handler: InAppPurchase.ReceiptRefreshHandler?) -> Void)? = nil) {
+    public init(canMakePayments: Bool = true,
+                setShouldAddStorePayementHandler: ((_ shouldAddStorePaymentHandler: ((Product) -> Bool)?, _ handler: InAppPurchase.PurchaseHandler?) -> Void)? = nil,
+                addTransactionObserverHandler: ((_ fallbackHandler: InAppPurchase.PurchaseHandler?) -> Void)? = nil,
+                removeTransactionObserverHandler: (() -> Void)? = nil,
+                fetchProductHandler: ((_ productIdentifiers: Set<String>, _ handler: ((_ result: Result<[Product], InAppPurchase.Error>) -> Void)?) -> Void)? = nil,
+                restoreHandler: ((_ handler: ((_ result: Result<Set<String>, InAppPurchase.Error>) -> Void)?) -> Void)? = nil,
+                purchaseHandler: ((_ productIdentifier: String, _ handler: InAppPurchase.PurchaseHandler?) -> Void)? = nil,
+                refreshReceiptHandler: ((_ handler: InAppPurchase.ReceiptRefreshHandler?) -> Void)? = nil) {
 
         self._canMakePayments = canMakePayments
         self._setShouldAddStorePayementHandler = setShouldAddStorePayementHandler
@@ -37,35 +37,35 @@ final class StubInAppPurchase: InAppPurchaseProvidable {
         self._receiptRefreshHandler = refreshReceiptHandler
     }
 
-    func canMakePayments() -> Bool {
+    public func canMakePayments() -> Bool {
         return _canMakePayments
     }
 
-    func set(shouldAddStorePaymentHandler: ((Product) -> Bool)?, handler: InAppPurchase.PurchaseHandler?) {
+    public func set(shouldAddStorePaymentHandler: ((Product) -> Bool)?, handler: InAppPurchase.PurchaseHandler?) {
         _setShouldAddStorePayementHandler?(shouldAddStorePaymentHandler, handler)
     }
 
-    func addTransactionObserver(fallbackHandler: InAppPurchase.PurchaseHandler?) {
+    public func addTransactionObserver(fallbackHandler: InAppPurchase.PurchaseHandler?) {
         _addTransactionObserverHandler?(fallbackHandler)
     }
 
-    func removeTransactionObserver() {
+    public func removeTransactionObserver() {
         _removeTransactionObserverHandler?()
     }
 
-    func fetchProduct(productIdentifiers: Set<String>, handler: ((_ result: Result<[Product], InAppPurchase.Error>) -> Void)?) {
+    public func fetchProduct(productIdentifiers: Set<String>, handler: ((_ result: Result<[Product], InAppPurchase.Error>) -> Void)?) {
         _fetchProductHandler?(productIdentifiers, handler)
     }
 
-    func restore(handler: ((_ result: Result<Set<String>, InAppPurchase.Error>) -> Void)?) {
+    public func restore(handler: ((_ result: Result<Set<String>, InAppPurchase.Error>) -> Void)?) {
         _restoreHandler?(handler)
     }
 
-    func purchase(productIdentifier: String, handler: InAppPurchase.PurchaseHandler?) {
+    public func purchase(productIdentifier: String, handler: InAppPurchase.PurchaseHandler?) {
         _purchaseHandler?(productIdentifier, handler)
     }
 
-    func refreshReceipt(handler: InAppPurchase.ReceiptRefreshHandler?) {
+    public func refreshReceipt(handler: InAppPurchase.ReceiptRefreshHandler?) {
         _receiptRefreshHandler?(handler)
     }
 }

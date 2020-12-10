@@ -113,8 +113,8 @@ iap.purchase(productIdentifier: "PRODUCT_ID", handler: { (result) in
     // This handler is called if the payment purchased, restored, deferred or failed.
 
     switch result {
-    case .success(let state):
-        // Handle `InAppPurchase.PaymentState`
+    case .success(let response):
+        // Handle `PaymentResponse`
     case .failure(let error):
         // Handle `InAppPurchase.Error`
     }
@@ -174,26 +174,14 @@ final class PurchaseService {
 }
 ```
 
-And then you can test `PurchaseService` easily.
+And then you can test `PurchaseService` easily with `InAppPurchaseStubs.framework`.
 
 ```swift
 // PurchaseServiceTests.swift
 
 import XCTest
 @testable import YourApp
-
-// Stub
-final class StubInAppPurchase: InAppPurchaseProvidable {
-    private let _purchaseHandler: ((_ productIdentifier: String, _ handler: InAppPurchase.PurchaseHandler?) -> Void)?
-
-    init(purchaseHandler: ((_ productIdentifier: String, _ handler: InAppPurchase.PurchaseHandler?) -> Void)? = nil) {
-        self._purchaseHandler = purchaseHandler
-    }
-
-    func purchase(productIdentifier: String, handler: InAppPurchase.PurchaseHandler?) {
-        _purchaseHandler?(productIdentifier, handler)
-    }
-}
+import InAppPurchaseStubs
 
 // Test
 final class PurchaseServiceTests: XCTestCase {
@@ -213,7 +201,7 @@ final class PurchaseServiceTests: XCTestCase {
 }
 ```
 
-If you want more information for test, see also [Stubs](./Tests/Stubs/) and [Tests](./Tests/).
+If you want more information for test, see also [InAppPurchaseStubs](./InAppPurchaseStubs/Stubs/) and [Tests](./Tests/).
 
 ## Requirements
 

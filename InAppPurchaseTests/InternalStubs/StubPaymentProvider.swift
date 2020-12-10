@@ -10,7 +10,7 @@ import Foundation
 @testable import InAppPurchase
 import StoreKit
 
-final class StubPaymentProvider: PaymentProvidable {
+public final class StubPaymentProvider: PaymentProvidable {
     private let _canMakePayments: Bool
     private let _addTransactionObserverHandler: (() -> Void)?
     private let _removeTransactionObserverHandler: (() -> Void)?
@@ -20,14 +20,14 @@ final class StubPaymentProvider: PaymentProvidable {
     private let _setShouldAddStorePaymentHandler: ((@escaping ShouldAddStorePaymentHandler) -> Void)?
     private let _fallbackHandler: ((_ fallbackHandler: @escaping PaymentHandler) -> Void)?
 
-    init(canMakePayments: Bool = true,
-         addTransactionObserverHandler: (() -> Void)? = nil,
-         removeTransactionObserverHandler: (() -> Void)? = nil,
-         restoreHandler: ((_ handler: @escaping RestoreHandler) -> Void)? = nil,
-         addPaymentHandler: ((_ payment: SKPayment, _ handler: @escaping PaymentHandler) -> Void)? = nil,
-         addProductIdentifierHandler: ((_ productIdentifier: String, _ handler: @escaping PaymentHandler) -> Void)? = nil,
-         setShouldAddStorePaymentHandler: ((@escaping ShouldAddStorePaymentHandler) -> Void)? = nil,
-         fallbackHandler: ((_ fallbackHandler: @escaping PaymentHandler) -> Void)? = nil) {
+    public init(canMakePayments: Bool = true,
+                addTransactionObserverHandler: (() -> Void)? = nil,
+                removeTransactionObserverHandler: (() -> Void)? = nil,
+                restoreHandler: ((_ handler: @escaping RestoreHandler) -> Void)? = nil,
+                addPaymentHandler: ((_ payment: SKPayment, _ handler: @escaping PaymentHandler) -> Void)? = nil,
+                addProductIdentifierHandler: ((_ productIdentifier: String, _ handler: @escaping PaymentHandler) -> Void)? = nil,
+                setShouldAddStorePaymentHandler: ((@escaping ShouldAddStorePaymentHandler) -> Void)? = nil,
+                fallbackHandler: ((_ fallbackHandler: @escaping PaymentHandler) -> Void)? = nil) {
 
         self._canMakePayments = canMakePayments
         self._addTransactionObserverHandler = addTransactionObserverHandler
@@ -39,35 +39,35 @@ final class StubPaymentProvider: PaymentProvidable {
         self._fallbackHandler = fallbackHandler
     }
 
-    func canMakePayments() -> Bool {
+    public func canMakePayments() -> Bool {
         return _canMakePayments
     }
 
-    func addTransactionObserver() {
+    public func addTransactionObserver() {
         _addTransactionObserverHandler?()
     }
 
-    func removeTransactionObserver() {
+    public func removeTransactionObserver() {
         _removeTransactionObserverHandler?()
     }
 
-    func restoreCompletedTransactions(handler: @escaping RestoreHandler) {
+    public func restoreCompletedTransactions(handler: @escaping RestoreHandler) {
         _restoreHandler?(handler)
     }
 
-    func add(payment: SKPayment, handler: @escaping PaymentHandler) {
+    public func add(payment: SKPayment, handler: @escaping PaymentHandler) {
         _addPaymentHandler?(payment, handler)
     }
 
-    func set(shouldAddStorePaymentHandler: @escaping ShouldAddStorePaymentHandler) {
+    public func set(shouldAddStorePaymentHandler: @escaping ShouldAddStorePaymentHandler) {
         _setShouldAddStorePaymentHandler?(shouldAddStorePaymentHandler)
     }
 
-    func addPaymentHandler(withProductIdentifier productIdentifier: String, handler: @escaping PaymentHandler) {
+    public func addPaymentHandler(withProductIdentifier productIdentifier: String, handler: @escaping PaymentHandler) {
         _addProductIdentifierHandler?(productIdentifier, handler)
     }
 
-    func set(fallbackHandler: @escaping PaymentHandler) {
+    public func set(fallbackHandler: @escaping PaymentHandler) {
         _fallbackHandler?(fallbackHandler)
     }
 }

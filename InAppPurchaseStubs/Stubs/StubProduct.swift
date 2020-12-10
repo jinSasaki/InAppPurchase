@@ -9,7 +9,7 @@
 import Foundation
 import StoreKit
 
-final class StubProduct: SKProduct {
+public final class StubProduct: SKProduct {
     private let _productIdentifier: String
     private let _price: Decimal
     private let _localizedTitle: String
@@ -20,7 +20,7 @@ final class StubProduct: SKProduct {
     private let _downloadContentVersion: String
     private let _subscriptionPeriod: Any?
 
-    init(
+    public init(
         productIdentifier: String,
         price: Decimal = 0,
         localizedTitle: String = "",
@@ -42,40 +42,40 @@ final class StubProduct: SKProduct {
         self._subscriptionPeriod = subscriptionPeriod
     }
 
-    override var productIdentifier: String {
+    public override var productIdentifier: String {
         return _productIdentifier
     }
 
-    override var price: NSDecimalNumber {
+    public override var price: NSDecimalNumber {
         return NSDecimalNumber(decimal: _price)
     }
 
-    override var localizedTitle: String {
+    public override var localizedTitle: String {
         return _localizedTitle
     }
 
-    override var localizedDescription: String {
+    public override var localizedDescription: String {
         return _localizedDescription
     }
 
-    override var priceLocale: Locale {
+    public override var priceLocale: Locale {
         return _priceLocale
     }
 
-    override var isDownloadable: Bool {
+    public override var isDownloadable: Bool {
         return _isDownloadable
     }
 
-    override var downloadContentLengths: [NSNumber] {
+    public override var downloadContentLengths: [NSNumber] {
         return _downloadContentLengths
     }
 
-    override var downloadContentVersion: String {
+    public override var downloadContentVersion: String {
         return _downloadContentVersion
     }
 
     @available(iOS 11.2, *)
-    override var subscriptionPeriod: SKProductSubscriptionPeriod? {
+    public override var subscriptionPeriod: SKProductSubscriptionPeriod? {
         return _subscriptionPeriod as? SKProductSubscriptionPeriod
     }
 }

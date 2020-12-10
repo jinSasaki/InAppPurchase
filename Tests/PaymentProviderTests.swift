@@ -8,6 +8,7 @@
 
 import XCTest
 @testable import InAppPurchase
+import InAppPurchaseStubs
 
 class PaymentProviderTests: XCTestCase {
 

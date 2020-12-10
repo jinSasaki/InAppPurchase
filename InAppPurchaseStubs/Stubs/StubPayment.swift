@@ -9,13 +9,13 @@
 import Foundation
 import StoreKit
 
-final class StubPayment: SKPayment {
+public final class StubPayment: SKPayment {
     private let _productIdentifier: String
-    override var productIdentifier: String {
+    public override var productIdentifier: String {
         return _productIdentifier
     }
 
-    init(productIdentifier: String) {
+    public init(productIdentifier: String) {
         self._productIdentifier = productIdentifier
     }
 }

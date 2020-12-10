@@ -9,20 +9,20 @@
 import Foundation
 import StoreKit
 
-final class StubProductsResponse: SKProductsResponse {
+public final class StubProductsResponse: SKProductsResponse {
     private let _products: [StubProduct]
     private let _invalidProductIdentifiers: [String]
 
-    init(products: [StubProduct], invalidProductIdentifiers: [String]) {
+    public init(products: [StubProduct], invalidProductIdentifiers: [String]) {
         self._products = products
         self._invalidProductIdentifiers = invalidProductIdentifiers
     }
 
-    override var products: [SKProduct] {
+    public override var products: [SKProduct] {
         return _products
     }
 
-    override var invalidProductIdentifiers: [String] {
+    public override var invalidProductIdentifiers: [String] {
         return _invalidProductIdentifiers
     }
 }
