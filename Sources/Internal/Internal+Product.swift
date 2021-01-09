@@ -6,6 +6,7 @@
 //  Copyright © 2018年 Jin Sasaki. All rights reserved.
 //
 
+import Foundation
 import StoreKit
 
 extension Internal {
