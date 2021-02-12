@@ -6,6 +6,7 @@
 //  Copyright © 2018年 Jin Sasaki. All rights reserved.
 //
 
+import Foundation
 import StoreKit
 
 internal typealias ProductHandler = (_ result: Result<[SKProduct], InAppPurchase.Error>) -> Void

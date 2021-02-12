@@ -6,6 +6,8 @@
 //  Copyright © 2017年 Jin Sasaki. All rights reserved.
 //
 
+import Foundation
+
 public protocol Product {
     var productIdentifier: String { get }
     var price: Decimal { get }

@@ -6,6 +6,7 @@
 //  Copyright © 2017年 Jin Sasaki. All rights reserved.
 //
 
+import Foundation
 import StoreKit
 
 public typealias TransactionState = SKPaymentTransactionState
