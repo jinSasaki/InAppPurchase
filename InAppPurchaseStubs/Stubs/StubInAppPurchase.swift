@@ -17,6 +17,7 @@ public final class StubInAppPurchase: InAppPurchaseProvidable {
     private let _restoreHandler: ((_ handler: ((_ result: Result<Set<String>, InAppPurchase.Error>) -> Void)?) -> Void)?
     private let _purchaseHandler: ((_ productIdentifier: String, _ handler: InAppPurchase.PurchaseHandler?) -> Void)?
     private let _receiptRefreshHandler: ((_ handler: InAppPurchase.ReceiptRefreshHandler?) -> Void)?
+    private let _finishTransaction: ((_ transaction: PaymentTransaction) -> Void)?
 
     public init(canMakePayments: Bool = true,
                 setShouldAddStorePayementHandler: ((_ shouldAddStorePaymentHandler: ((Product) -> Bool)?, _ handler: InAppPurchase.PurchaseHandler?) -> Void)? = nil,
@@ -25,7 +26,8 @@ public final class StubInAppPurchase: InAppPurchaseProvidable {
                 fetchProductHandler: ((_ productIdentifiers: Set<String>, _ handler: ((_ result: Result<[Product], InAppPurchase.Error>) -> Void)?) -> Void)? = nil,
                 restoreHandler: ((_ handler: ((_ result: Result<Set<String>, InAppPurchase.Error>) -> Void)?) -> Void)? = nil,
                 purchaseHandler: ((_ productIdentifier: String, _ handler: InAppPurchase.PurchaseHandler?) -> Void)? = nil,
-                refreshReceiptHandler: ((_ handler: InAppPurchase.ReceiptRefreshHandler?) -> Void)? = nil) {
+                refreshReceiptHandler: ((_ handler: InAppPurchase.ReceiptRefreshHandler?) -> Void)? = nil,
+                finishTransaction: ((_ transaction: PaymentTransaction) -> Void)? = nil) {
 
         self._canMakePayments = canMakePayments
         self._setShouldAddStorePayementHandler = setShouldAddStorePayementHandler
@@ -35,6 +37,7 @@ public final class StubInAppPurchase: InAppPurchaseProvidable {
         self._restoreHandler = restoreHandler
         self._purchaseHandler = purchaseHandler
         self._receiptRefreshHandler = refreshReceiptHandler
+        self._finishTransaction = finishTransaction
     }
 
     public func canMakePayments() -> Bool {
@@ -67,5 +70,9 @@ public final class StubInAppPurchase: InAppPurchaseProvidable {
 
     public func refreshReceipt(handler: InAppPurchase.ReceiptRefreshHandler?) {
         _receiptRefreshHandler?(handler)
+    }
+
+    public func finish(transaction: PaymentTransaction) {
+        _finishTransaction?(transaction)
     }
 }

@@ -38,19 +38,19 @@ class InAppPurchaseTests: XCTestCase {
         XCTAssertEqual(PaymentState.restored, PaymentState.restored)
         XCTAssertNotEqual(PaymentState.deferred, PaymentState.restored)
 
-        let transaction1 = Internal.PaymentTransaction(StubPaymentTransaction(
+        let transaction1 = PaymentTransaction(StubPaymentTransaction(
             transactionIdentifier: "TRANSACTION_001",
             transactionState: .purchased, original: nil,
             payment: StubPayment(productIdentifier: "PRODUCT_001"),
             error: nil
         ))
-        let transaction2 = Internal.PaymentTransaction(StubPaymentTransaction(
+        let transaction2 = PaymentTransaction(StubPaymentTransaction(
             transactionIdentifier: "TRANSACTION_001",
             transactionState: .purchased, original: nil,
             payment: StubPayment(productIdentifier: "PRODUCT_001"),
             error: nil
         ))
-        let transaction3 = Internal.PaymentTransaction(StubPaymentTransaction(
+        let transaction3 = PaymentTransaction(StubPaymentTransaction(
             transactionIdentifier: "TRANSACTION_002",
             transactionState: .purchased, original: nil,
             payment: StubPayment(productIdentifier: "PRODUCT_001"),
@@ -126,7 +126,7 @@ class InAppPurchaseTests: XCTestCase {
             handler: { (result) in
                 switch result {
                 case .success(let response):
-                    let expected = Internal.PaymentResponse(state: .purchased, transaction: Internal.PaymentTransaction(transaction))
+                    let expected = Internal.PaymentResponse(state: .purchased, transaction: PaymentTransaction(transaction))
                     XCTAssertEqual(response.state, expected.state)
                     XCTAssertEqual(response.transaction.transactionIdentifier, expected.transaction.transactionIdentifier)
                 case .failure:
@@ -617,6 +617,26 @@ class InAppPurchaseTests: XCTestCase {
             expectation.fulfill()
 
         })
+        wait(for: [expectation], timeout: 1)
+    }
+
+    func testFinishTransaction() {
+        let expectation = self.expectation()
+        let payment = StubPayment(productIdentifier: "PRODUCT_001")
+        let transaction = StubPaymentTransaction(
+            transactionIdentifier: "TRANSACTION_001",
+            transactionState: .restored,
+            original: nil,
+            payment: payment,
+            error: nil
+        )
+        let paymentProvider = StubPaymentProvider(finishTransactionHandler: { transaction in
+            XCTAssertEqual(transaction.transactionIdentifier, "TRANSACTION_001")
+            expectation.fulfill()
+        })
+
+        let iap = InAppPurchase(payment: paymentProvider)
+        iap.finish(transaction: .init(transaction))
         wait(for: [expectation], timeout: 1)
     }
 }

@@ -19,6 +19,7 @@ public final class StubPaymentProvider: PaymentProvidable {
     private let _addProductIdentifierHandler: ((_ productIdentifier: String, _ handler: @escaping PaymentHandler) -> Void)?
     private let _setShouldAddStorePaymentHandler: ((@escaping ShouldAddStorePaymentHandler) -> Void)?
     private let _fallbackHandler: ((_ fallbackHandler: @escaping PaymentHandler) -> Void)?
+    private let _finishTransactionHandler: ((_ transaction: PaymentTransaction) -> Void)?
 
     public init(canMakePayments: Bool = true,
                 addTransactionObserverHandler: (() -> Void)? = nil,
@@ -27,7 +28,8 @@ public final class StubPaymentProvider: PaymentProvidable {
                 addPaymentHandler: ((_ payment: SKPayment, _ handler: @escaping PaymentHandler) -> Void)? = nil,
                 addProductIdentifierHandler: ((_ productIdentifier: String, _ handler: @escaping PaymentHandler) -> Void)? = nil,
                 setShouldAddStorePaymentHandler: ((@escaping ShouldAddStorePaymentHandler) -> Void)? = nil,
-                fallbackHandler: ((_ fallbackHandler: @escaping PaymentHandler) -> Void)? = nil) {
+                fallbackHandler: ((_ fallbackHandler: @escaping PaymentHandler) -> Void)? = nil,
+                finishTransactionHandler: ((_ transaction: PaymentTransaction) -> Void)? = nil) {
 
         self._canMakePayments = canMakePayments
         self._addTransactionObserverHandler = addTransactionObserverHandler
@@ -37,6 +39,7 @@ public final class StubPaymentProvider: PaymentProvidable {
         self._addProductIdentifierHandler = addProductIdentifierHandler
         self._setShouldAddStorePaymentHandler = setShouldAddStorePaymentHandler
         self._fallbackHandler = fallbackHandler
+        self._finishTransactionHandler = finishTransactionHandler
     }
 
     public func canMakePayments() -> Bool {
@@ -69,5 +72,9 @@ public final class StubPaymentProvider: PaymentProvidable {
 
     public func set(fallbackHandler: @escaping PaymentHandler) {
         _fallbackHandler?(fallbackHandler)
+    }
+
+    public func finish(transaction: PaymentTransaction) {
+        _finishTransactionHandler?(transaction)
     }
 }

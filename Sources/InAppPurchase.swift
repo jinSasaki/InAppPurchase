@@ -20,6 +20,7 @@ public protocol InAppPurchaseProvidable {
     func restore(handler: ((_ result: Result<Set<String>, InAppPurchase.Error>) -> Void)?)
     func purchase(productIdentifier: String, handler: InAppPurchase.PurchaseHandler?)
     func refreshReceipt(handler: InAppPurchase.ReceiptRefreshHandler?)
+    func finish(transaction: PaymentTransaction)
 }
 
 final public class InAppPurchase {
@@ -49,6 +50,12 @@ final public class InAppPurchase {
         self.productProvider = product
         self.paymentProvider = payment
         self.receiptRefreshProvider = receiptRefresh
+    }
+}
+
+extension InAppPurchase {
+    public convenience init(shouldCompleteImmediately: Bool) {
+        self.init(payment: PaymentProvider(shouldCompleteImmediately: shouldCompleteImmediately))
     }
 }
 
@@ -152,6 +159,10 @@ extension InAppPurchase: InAppPurchaseProvidable {
                 handler?(.failure(error))
             }
         }
+    }
+
+    public func finish(transaction: PaymentTransaction) {
+        self.paymentProvider.finish(transaction: transaction)
     }
 }
 
