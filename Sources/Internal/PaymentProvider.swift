@@ -16,11 +16,13 @@ protocol PaymentQueue {
 
     func add(_ payment: SKPayment)
     func restoreCompletedTransactions()
+    func finishTransaction(_ transaction: SKPaymentTransaction)
 }
 
 final internal class PaymentProvider: NSObject {
 
     private let paymentQueue: PaymentQueue
+    private let shouldCompleteImmediately: Bool
     private var paymentHandlers: [String: [PaymentHandler]] = [:]
     private var restoreHandlers: [RestoreHandler] = []
     private var fallbackHandler: PaymentHandler?
@@ -28,8 +30,9 @@ final internal class PaymentProvider: NSObject {
     private var storePaymentHandler: PaymentHandler?
     private lazy var dispatchQueue: DispatchQueue = DispatchQueue(label: String(describing: self))
 
-    init(paymentQueue: PaymentQueue = SKPaymentQueue.default()) {
+    init(paymentQueue: PaymentQueue = SKPaymentQueue.default(), shouldCompleteImmediately: Bool = true) {
         self.paymentQueue = paymentQueue
+        self.shouldCompleteImmediately = shouldCompleteImmediately
     }
 }
 
@@ -90,7 +93,11 @@ extension PaymentProvider: SKPaymentTransactionObserver {
                 continue
             case  .deferred:
                 break
-            case .purchased, .failed, .restored:
+            case .purchased, .restored:
+                if self.shouldCompleteImmediately {
+                    queue.finishTransaction(transaction)
+                }
+            case .failed:
                 queue.finishTransaction(transaction)
             @unknown default:
                 // Do nothing and skip
@@ -135,6 +142,11 @@ extension PaymentProvider: SKPaymentTransactionObserver {
     internal func paymentQueue(_ queue: SKPaymentQueue, shouldAddStorePayment payment: SKPayment, for product: SKProduct) -> Bool {
         return shouldAddStorePaymentHandler?(queue, payment, product) ?? false
     }
+
+    internal func finish(transaction: PaymentTransaction) {
+        paymentQueue.finishTransaction(transaction.skTransaction)
+    }
+
 }
 
 // MARK: - SKPaymentQueue extension

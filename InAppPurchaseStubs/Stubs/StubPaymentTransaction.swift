@@ -10,7 +10,7 @@ import Foundation
 import StoreKit
 import InAppPurchase
 
-public final class StubPaymentTransaction: SKPaymentTransaction, PaymentTransaction {
+public final class StubPaymentTransaction: SKPaymentTransaction {
     private let _transactionIdentifier: String?
     private let _transactionState: SKPaymentTransactionState
     private let _original: StubPaymentTransaction?

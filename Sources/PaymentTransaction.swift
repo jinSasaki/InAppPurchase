@@ -11,24 +11,19 @@ import StoreKit
 
 public typealias TransactionState = SKPaymentTransactionState
 
-public protocol PaymentTransaction {
-    var transactionIdentifier: String? { get }
-    var originalTransactionIdentifier: String? { get }
-    var productIdentifier: String { get }
-}
-
-extension Internal {
-    internal struct PaymentTransaction {
-        let transactionIdentifier: String?
-        let originalTransactionIdentifier: String?
-        let productIdentifier: String
+public struct PaymentTransaction {
+    var transactionIdentifier: String? {
+        skTransaction.transactionIdentifier
     }
-}
-extension Internal.PaymentTransaction: PaymentTransaction {}
-extension Internal.PaymentTransaction {
-    internal init(_ transaction: SKPaymentTransaction) {
-        self.transactionIdentifier = transaction.transactionIdentifier
-        self.originalTransactionIdentifier = transaction.original?.transactionIdentifier
-        self.productIdentifier = transaction.payment.productIdentifier
+    var originalTransactionIdentifier: String? {
+        skTransaction.original?.transactionIdentifier
+    }
+    var productIdentifier: String {
+        skTransaction.payment.productIdentifier
+    }
+
+    internal let skTransaction: SKPaymentTransaction
+    internal init(_ skTransaction: SKPaymentTransaction) {
+        self.skTransaction = skTransaction
     }
 }

@@ -105,6 +105,67 @@ class PaymentProviderTests: XCTestCase {
         self.wait(for: [finishExpectation, expectation], timeout: 1)
     }
 
+    func testPurchasing() {
+        let finishExpectation = self.expectation()
+        finishExpectation.isInverted = true // For checking not called finishTransaction
+        let queue = StubPaymentQueue(finishTransactionHandler: { _ in
+            finishExpectation.fulfill()
+        })
+        let provider = PaymentProvider(paymentQueue: queue)
+        let payment = StubPayment(productIdentifier: "PAYMENT_001")
+        let expectation = self.expectation()
+        expectation.isInverted = true // For checking not called add(payment:)
+
+        provider.add(payment: payment) { _, result in
+            switch result {
+            case .success(let transaction):
+                XCTAssertEqual(transaction.transactionIdentifier, "TRANSACTION_001")
+            case .failure:
+                XCTFail()
+            }
+            expectation.fulfill()
+        }
+
+        let transaction = StubPaymentTransaction(
+            transactionIdentifier: "TRANSACTION_001",
+            transactionState: .purchasing,
+            original: nil,
+            payment: payment
+        )
+        provider.paymentQueue(queue, updatedTransactions: [transaction])
+        self.wait(for: [finishExpectation, expectation], timeout: 1)
+    }
+
+    func testPurchaseNotImmediatelyCompletion() {
+        let finishExpectation = self.expectation()
+        finishExpectation.isInverted = true // For checking not called finishTransaction
+        let queue = StubPaymentQueue(finishTransactionHandler: { _ in
+            finishExpectation.fulfill()
+        })
+        let provider = PaymentProvider(paymentQueue: queue, shouldCompleteImmediately: false)
+        let payment = StubPayment(productIdentifier: "PAYMENT_001")
+        let expectation = self.expectation()
+
+        provider.add(payment: payment) { _, result in
+            switch result {
+            case .success(let transaction):
+                XCTAssertEqual(transaction.transactionIdentifier, "TRANSACTION_001")
+            case .failure:
+                XCTFail()
+            }
+            expectation.fulfill()
+        }
+
+        let transaction = StubPaymentTransaction(
+            transactionIdentifier: "TRANSACTION_001",
+            transactionState: .purchased,
+            original: nil,
+            payment: payment
+        )
+        provider.paymentQueue(queue, updatedTransactions: [transaction])
+        self.wait(for: [finishExpectation, expectation], timeout: 1)
+    }
+
     func testRestoreCompletedTransactions() {
         let expectation = self.expectation()
         let queue = StubPaymentQueue(restoreCompletedTransactionsHandler: {
@@ -287,6 +348,19 @@ class PaymentProviderTests: XCTestCase {
         let payment = StubPayment(productIdentifier: "PAYMENT_001")
         let product = StubProduct(productIdentifier: "PAYMENT_001")
         XCTAssertTrue(provider.paymentQueue(queue, shouldAddStorePayment: payment, for: product))
+        self.wait(for: [expectation], timeout: 1)
+    }
+
+    func testFinishTransaction() {
+        let expectation = self.expectation()
+        let queue = StubPaymentQueue(finishTransactionHandler: { (transaction) in
+            expectation.fulfill()
+            XCTAssertEqual(transaction.transactionIdentifier, "TRANSACTION_001")
+        })
+        let provider = PaymentProvider(paymentQueue: queue)
+        let payment = StubPayment(productIdentifier: "PAYMENT_001")
+        let transaction = StubPaymentTransaction(transactionIdentifier: "TRANSACTION_001", transactionState: .purchased, original: nil, payment: payment, error: nil)
+        provider.finish(transaction: .init(transaction))
         self.wait(for: [expectation], timeout: 1)
     }
 }

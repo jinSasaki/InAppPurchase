@@ -121,6 +121,29 @@ iap.purchase(productIdentifier: "PRODUCT_ID", handler: { (result) in
 })
 ```
 
+### Transaction handling
+If you want to handle the timing to complete transaction, set `shouldCompleteImmediately` to `false` at initializing.
+
+
+```swift
+let iap = InAppPurchase(shouldCompleteImmediately: false) // 
+iap.purchase(productIdentifier: "PRODUCT_ID", handler: { (result) in
+    // This handler is called if the payment purchased, restored, deferred or failed.
+
+    switch result {
+    case .success(let response):
+        // Handle `PaymentResponse`
+        // MUST: InAppPurchase does not complete transaction, if purchased, restored. Your app must call `InAppPurchase.finish(transaction:)`.
+        if response.state == .purchased || response.state == .restored {
+            iap.finish(transaction: response.transaction)
+        }
+    case .failure(let error):
+        // Handle `InAppPurchase.Error`
+    }
+})
+
+```
+
 ## For Dependency Injection
 
 The purchase logic in the App should be safe and testable. 

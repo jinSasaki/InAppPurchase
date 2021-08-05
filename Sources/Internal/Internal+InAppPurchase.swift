@@ -28,6 +28,7 @@ internal protocol PaymentProvidable {
     func addPaymentHandler(withProductIdentifier: String, handler: @escaping PaymentHandler)
     func set(shouldAddStorePaymentHandler: @escaping ShouldAddStorePaymentHandler)
     func set(fallbackHandler: @escaping PaymentHandler)
+    func finish(transaction: PaymentTransaction)
 }
 
 internal protocol ReceiptRefreshProvidable {
@@ -75,11 +76,11 @@ extension InAppPurchase {
             // Do nothing
             break
         case .purchased:
-            handler?(.success(Internal.PaymentResponse(state: .purchased, transaction: Internal.PaymentTransaction(transaction))))
+            handler?(.success(Internal.PaymentResponse(state: .purchased, transaction: PaymentTransaction(transaction))))
         case .restored:
-            handler?(.success(Internal.PaymentResponse(state: .restored, transaction: Internal.PaymentTransaction(transaction))))
+            handler?(.success(Internal.PaymentResponse(state: .restored, transaction: PaymentTransaction(transaction))))
         case .deferred:
-            handler?(.success(Internal.PaymentResponse(state: .deferred, transaction: Internal.PaymentTransaction(transaction))))
+            handler?(.success(Internal.PaymentResponse(state: .deferred, transaction: PaymentTransaction(transaction))))
         case .failed:
             handler?(.failure(InAppPurchase.Error(error: transaction.error)))
         @unknown default:
