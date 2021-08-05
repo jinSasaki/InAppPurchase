@@ -16,6 +16,13 @@ jobs:
     - name: Build
       run: swift build -v
     - name: Run tests
-      run: swift test -v
+      run: swift test --enable-code-coverage -v
+    - name: Coverage file
+      uses: sersoft-gmbh/swift-coverage-action@v2
+      with:
+        format: lcov
     - name: Codecov
       uses: codecov/codecov-action@v2.0.2
+      with:
+        files: ./.swiftcov/InAppPurchasePackageTests.xctest.coverage.lcov
+

@@ -12,13 +12,13 @@ import StoreKit
 public typealias TransactionState = SKPaymentTransactionState
 
 public struct PaymentTransaction {
-    var transactionIdentifier: String? {
+    public var transactionIdentifier: String? {
         skTransaction.transactionIdentifier
     }
-    var originalTransactionIdentifier: String? {
+    public var originalTransactionIdentifier: String? {
         skTransaction.original?.transactionIdentifier
     }
-    var productIdentifier: String {
+    public var productIdentifier: String {
         skTransaction.payment.productIdentifier
     }
 
