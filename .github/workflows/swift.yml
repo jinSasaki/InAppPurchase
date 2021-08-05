@@ -17,5 +17,7 @@ jobs:
       run: swift build -v
     - name: Run tests
       run: swift test --enable-code-coverage -v
+    - name: Coverage file
+      run: llvm-cov export -format="lcov" .build/debug/InAppPurchaseTests.xctest -instr-profile .build/debug/codecov/default.profdata > info.lcov
     - name: Codecov
       uses: codecov/codecov-action@v2.0.2
