@@ -22,6 +22,7 @@ protocol PaymentQueue {
 final internal class PaymentProvider: NSObject {
 
     private let paymentQueue: PaymentQueue
+    private let productIds: [String]?
     private let shouldCompleteImmediately: Bool
     private var paymentHandlers: [String: [PaymentHandler]] = [:]
     private var restoreHandlers: [RestoreHandler] = []
@@ -30,9 +31,12 @@ final internal class PaymentProvider: NSObject {
     private var storePaymentHandler: PaymentHandler?
     private lazy var dispatchQueue: DispatchQueue = DispatchQueue(label: String(describing: self))
 
-    init(paymentQueue: PaymentQueue = SKPaymentQueue.default(), shouldCompleteImmediately: Bool = true) {
+    init(paymentQueue: PaymentQueue = SKPaymentQueue.default(),
+         shouldCompleteImmediately: Bool = true,
+         productIds: [String]? = nil) {
         self.paymentQueue = paymentQueue
         self.shouldCompleteImmediately = shouldCompleteImmediately
+        self.productIds = productIds
     }
 }
 
@@ -50,6 +54,10 @@ extension PaymentProvider: PaymentProvidable {
     }
 
     internal func add(payment: SKPayment, handler: @escaping PaymentHandler) {
+        if let productIds = self.productIds, !productIds.contains(payment.productIdentifier) {
+            handler(self.paymentQueue, .failure(InAppPurchase.Error.invalid(productIds: [payment.productIdentifier])))
+            return
+        }
         addPaymentHandler(withProductIdentifier: payment.productIdentifier, handler: handler)
         DispatchQueue.main.async {
             self.paymentQueue.add(payment)
@@ -87,6 +95,10 @@ extension PaymentProvider: PaymentProvidable {
 extension PaymentProvider: SKPaymentTransactionObserver {
     internal func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
         for transaction in transactions {
+            if let productIds = self.productIds, !productIds.contains(transaction.payment.productIdentifier) {
+                // Do not handle not registered product
+                continue
+            }
             switch transaction.transactionState {
             case .purchasing:
                 // Do nothing and skip

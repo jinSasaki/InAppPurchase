@@ -126,7 +126,7 @@ If you want to handle the timing to complete transaction, set `shouldCompleteImm
 
 
 ```swift
-let iap = InAppPurchase(shouldCompleteImmediately: false) // 
+let iap = InAppPurchase(shouldCompleteImmediately: false)
 iap.purchase(productIdentifier: "PRODUCT_ID", handler: { (result) in
     // This handler is called if the payment purchased, restored, deferred or failed.
 
@@ -143,6 +143,50 @@ iap.purchase(productIdentifier: "PRODUCT_ID", handler: { (result) in
 })
 
 ```
+
+### Multiple instances of InAppPurchase
+If you want to use multiple InAppPurchase, make each instance.  
+**However, be careful the fallback handling because of duplicate handlings.**
+
+This is duplicate handling example:
+
+```swift
+let iap1 = InAppPurchase.default
+let iap2 = InAppPurchase(shouldCompleteImmediately: false)
+iap1.addTransactionObserver(fallbackHandler: {
+    // NOT CALLED
+    // This fallback handler is NOT called because the purchase handler is used.
+})
+iap2.addTransactionObserver(fallbackHandler: {
+    // CALLED
+    // This fallback handler is called because the purchase handler is not associated to iap2.
+})
+iap1.purchase(productIdentifier: "your.purchase.item1", handler: { (result) in
+    // CALLED
+})
+
+```
+
+To avoid this situation, I recommend to **specify product IDs for each instance**.
+
+```swift
+let iap1 = InAppPurchase(shouldCompleteImmediately: true, productIds: ["your.purchase.item1", "your.purchase.item2"])
+let iap2 = InAppPurchase(shouldCompleteImmediately: false, productIds: ["your.purchase.item3", "your.purchase.item4"])
+iap1.addTransactionObserver(fallbackHandler: {
+    // NOT CALLED
+    // This fallback handler is NOT called because the purchase handler is used.
+})
+iap2.addTransactionObserver(fallbackHandler: {
+    // NOT CALLED
+    // This fallback handler is NOT called because "your.purchase.item1" is not specified for iap2.
+})
+iap1.purchase(productIdentifier: "your.purchase.item1", handler: { (result) in
+    // CALLED
+})
+
+```
+
+In addition, if you do not specify `productIds` or set `productIds: nil`, the iap instance allow all product ids.
 
 ## For Dependency Injection
 
