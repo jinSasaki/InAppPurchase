@@ -1,4 +1,6 @@
 excluded:
+  - Example
+
 disabled_rules:
   - xctfail_message
   - nesting

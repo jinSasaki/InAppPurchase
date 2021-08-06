@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="gpV-0X-FFP">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Custom-->
+        <scene sceneID="vGP-re-Os5">
+            <objects>
+                <viewController title="Custom" id="gpV-0X-FFP" customClass="ViewController" customModule="CustomInAppPurchaseSample" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="fUQ-ov-vUW">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="fgP-pl-boj">
+                                <rect key="frame" x="129.5" y="104" width="155" height="130"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kVK-n2-cSf">
+                                        <rect key="frame" x="0.0" y="0.0" width="155" height="30"/>
+                                        <state key="normal" title="Purchase coin"/>
+                                        <connections>
+                                            <action selector="tapPurchaseCoin" destination="gpV-0X-FFP" eventType="touchUpInside" id="AcV-qp-rZZ"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="B86-pN-VFG">
+                                        <rect key="frame" x="0.0" y="50" width="155" height="30"/>
+                                        <state key="normal" title="Purchase Full"/>
+                                        <connections>
+                                            <action selector="tapPurchaseFull" destination="gpV-0X-FFP" eventType="touchUpInside" id="HKa-EJ-PSI"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NXa-lH-REh">
+                                        <rect key="frame" x="0.0" y="100" width="155" height="30"/>
+                                        <state key="normal" title="Purchase Subscription"/>
+                                        <connections>
+                                            <action selector="tapPurchaseSubscription" destination="gpV-0X-FFP" eventType="touchUpInside" id="MQA-0Y-frV"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                            </stackView>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="iOw-SN-nlG">
+                                <rect key="frame" x="40" y="294" width="334" height="508"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </tableView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Not finished transactions (Tap to finish)" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tLo-gm-Pyu">
+                                <rect key="frame" x="40" y="265.5" width="299" height="20.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="hgY-Nn-meH"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="iOw-SN-nlG" firstAttribute="top" secondItem="fgP-pl-boj" secondAttribute="bottom" constant="60" id="CRZ-fE-hKK"/>
+                            <constraint firstItem="fgP-pl-boj" firstAttribute="top" secondItem="hgY-Nn-meH" secondAttribute="top" constant="60" id="Gil-Gv-73p"/>
+                            <constraint firstItem="hgY-Nn-meH" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="tLo-gm-Pyu" secondAttribute="trailing" symbolic="YES" id="GlX-Es-PuL"/>
+                            <constraint firstItem="hgY-Nn-meH" firstAttribute="trailing" secondItem="iOw-SN-nlG" secondAttribute="trailing" constant="40" id="KXE-nF-HCU"/>
+                            <constraint firstItem="iOw-SN-nlG" firstAttribute="top" secondItem="tLo-gm-Pyu" secondAttribute="bottom" constant="8" symbolic="YES" id="alG-2I-sAR"/>
+                            <constraint firstItem="hgY-Nn-meH" firstAttribute="bottom" secondItem="iOw-SN-nlG" secondAttribute="bottom" constant="60" id="jsS-IZ-urN"/>
+                            <constraint firstItem="fgP-pl-boj" firstAttribute="centerX" secondItem="hgY-Nn-meH" secondAttribute="centerX" id="mZ9-Si-uG4"/>
+                            <constraint firstItem="iOw-SN-nlG" firstAttribute="leading" secondItem="hgY-Nn-meH" secondAttribute="leading" constant="40" id="oys-xj-2aq"/>
+                            <constraint firstItem="tLo-gm-Pyu" firstAttribute="leading" secondItem="iOw-SN-nlG" secondAttribute="leading" id="xGr-8S-0d6"/>
+                        </constraints>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Custom" id="FQ1-xn-Dn9"/>
+                    <connections>
+                        <outlet property="tableView" destination="iOw-SN-nlG" id="HLM-Ym-XXl"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="yUH-YE-dq7" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="958" y="538"/>
+        </scene>
+    </scenes>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

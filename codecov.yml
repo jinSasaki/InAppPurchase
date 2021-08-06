@@ -11,3 +11,4 @@ ignore:
   - Tests
   - InAppPurchaseStubs
   - InAppPurchaseTests
+  - Example
