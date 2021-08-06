@@ -56,6 +56,28 @@ class PaymentProviderTests: XCTestCase {
         self.wait(for: [expectation], timeout: 1)
     }
 
+    func testAddPaymentNotSupportedProductId() {
+        let expectation = self.expectation()
+        expectation.isInverted = true
+        let queue = StubPaymentQueue(addPaymentHandler: { _ in
+            expectation.fulfill() // Do not call
+        })
+
+        let payment = StubPayment(productIdentifier: "NOT_SUPPORT_PRODUCT_001")
+        let provider = PaymentProvider(paymentQueue: queue, productIds: ["PRODUCT_001"])
+        let addExpectation = self.expectation()
+        provider.add(payment: payment) { _, result in
+            switch result {
+            case .success:
+                XCTFail()
+            case .failure(let error):
+                XCTAssertEqual(error, .invalid(productIds: ["NOT_SUPPORT_PRODUCT_001"]))
+            }
+            addExpectation.fulfill()
+        }
+        self.wait(for: [expectation, addExpectation], timeout: 1)
+    }
+
     func testAddPaymentWithProductIdentifier() {
         let expectation = self.expectation()
         let queue = StubPaymentQueue()
@@ -164,6 +186,32 @@ class PaymentProviderTests: XCTestCase {
         )
         provider.paymentQueue(queue, updatedTransactions: [transaction])
         self.wait(for: [finishExpectation, expectation], timeout: 1)
+    }
+
+    func testPaymentQueueIgnoreNotSupportProductId() {
+        let finishExpectation = self.expectation()
+        finishExpectation.isInverted = true // For checking not called finishTransaction
+        let queue = StubPaymentQueue(finishTransactionHandler: { _ in
+            finishExpectation.fulfill()
+        })
+
+        let provider = PaymentProvider(paymentQueue: queue, productIds: ["PRODUCT_001"])
+        let payment = StubPayment(productIdentifier: "NOT_SUPPORT_PRODUCT_001")
+
+        let fallbackExpectation = self.expectation()
+        fallbackExpectation.isInverted = true // For checking not called
+        provider.set { _, _ in
+            fallbackExpectation.fulfill()
+        }
+
+        let transaction = StubPaymentTransaction(
+            transactionIdentifier: "TRANSACTION_001",
+            transactionState: .purchased,
+            original: nil,
+            payment: payment
+        )
+        provider.paymentQueue(queue, updatedTransactions: [transaction])
+        self.wait(for: [finishExpectation, fallbackExpectation], timeout: 1)
     }
 
     func testRestoreCompletedTransactions() {

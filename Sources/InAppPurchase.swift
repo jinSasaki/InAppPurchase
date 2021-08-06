@@ -54,7 +54,7 @@ final public class InAppPurchase {
 }
 
 extension InAppPurchase {
-    public convenience init(shouldCompleteImmediately: Bool) {
+    public convenience init(shouldCompleteImmediately: Bool, productIds: [String]? = nil) {
         self.init(payment: PaymentProvider(shouldCompleteImmediately: shouldCompleteImmediately))
     }
 }
