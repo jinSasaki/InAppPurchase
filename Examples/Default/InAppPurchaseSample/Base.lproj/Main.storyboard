@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="2Oc-Mh-XQG">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Default-->
+        <scene sceneID="RVe-K0-V60">
+            <objects>
+                <viewController title="Default" id="2Oc-Mh-XQG" customClass="ViewController" customModule="InAppPurchaseSample" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="B7a-Pe-hNl">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="fTW-2W-2d7">
+                                <rect key="frame" x="129.5" y="104" width="155" height="130"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BDB-XL-uTd">
+                                        <rect key="frame" x="0.0" y="0.0" width="155" height="30"/>
+                                        <state key="normal" title="Purchase coin"/>
+                                        <connections>
+                                            <action selector="tapPurchaseCoin" destination="2Oc-Mh-XQG" eventType="touchUpInside" id="4Tt-xI-KEr"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Mh3-Px-UVy">
+                                        <rect key="frame" x="0.0" y="50" width="155" height="30"/>
+                                        <state key="normal" title="Purchase Full"/>
+                                        <connections>
+                                            <action selector="tapPurchaseFull" destination="2Oc-Mh-XQG" eventType="touchUpInside" id="AeR-Q7-9QX"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Leq-DP-OUW">
+                                        <rect key="frame" x="0.0" y="100" width="155" height="30"/>
+                                        <state key="normal" title="Purchase Subscription"/>
+                                        <connections>
+                                            <action selector="tapPurchaseSubscription" destination="2Oc-Mh-XQG" eventType="touchUpInside" id="C9g-UO-SrE"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="uiY-R5-iRu"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="fTW-2W-2d7" firstAttribute="centerX" secondItem="uiY-R5-iRu" secondAttribute="centerX" id="lb1-1a-oqj"/>
+                            <constraint firstItem="fTW-2W-2d7" firstAttribute="top" secondItem="uiY-R5-iRu" secondAttribute="top" constant="60" id="zaz-LQ-DSn"/>
+                        </constraints>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Default" id="RN7-he-2nq"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="aIj-3a-Yxc" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="958" y="-119"/>
+        </scene>
+    </scenes>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>
