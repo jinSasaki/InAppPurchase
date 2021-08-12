@@ -21,6 +21,7 @@ public protocol InAppPurchaseProvidable {
     func purchase(productIdentifier: String, handler: InAppPurchase.PurchaseHandler?)
     func refreshReceipt(handler: InAppPurchase.ReceiptRefreshHandler?)
     func finish(transaction: PaymentTransaction)
+    var transactions: [PaymentTransaction] { get }
 }
 
 final public class InAppPurchase {
@@ -163,6 +164,10 @@ extension InAppPurchase: InAppPurchaseProvidable {
 
     public func finish(transaction: PaymentTransaction) {
         self.paymentProvider.finish(transaction: transaction)
+    }
+
+    public var transactions: [PaymentTransaction] {
+        self.paymentProvider.transactions
     }
 }
 

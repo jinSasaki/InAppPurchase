@@ -29,6 +29,7 @@ internal protocol PaymentProvidable {
     func set(shouldAddStorePaymentHandler: @escaping ShouldAddStorePaymentHandler)
     func set(fallbackHandler: @escaping PaymentHandler)
     func finish(transaction: PaymentTransaction)
+    var transactions: [PaymentTransaction] { get }
 }
 
 internal protocol ReceiptRefreshProvidable {
