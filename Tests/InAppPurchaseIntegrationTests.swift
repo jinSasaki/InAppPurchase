@@ -22,7 +22,7 @@ final class InAppPurchaseIntegrationTests: XCTestCase {
         let product = StubProduct(productIdentifier: "PRODUCT_001")
         let productProvider = StubProductProvider(result: .success([product]))
         let queue = StubPaymentQueue()
-        let paymentProvider = PaymentProvider(paymentQueue: queue)
+        let paymentProvider = PaymentProvider(paymentQueue: queue, shouldCompleteImmediately: true, productIds: nil)
 
         let expectation1 = self.expectation()
         let expectation2 = self.expectation()

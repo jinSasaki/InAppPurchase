@@ -33,8 +33,8 @@ final internal class PaymentProvider: NSObject {
     private lazy var dispatchQueue: DispatchQueue = DispatchQueue(label: String(describing: self))
 
     init(paymentQueue: PaymentQueue = SKPaymentQueue.default(),
-         shouldCompleteImmediately: Bool = true,
-         productIds: [String]? = nil) {
+         shouldCompleteImmediately: Bool,
+         productIds: [String]?) {
         self.paymentQueue = paymentQueue
         self.shouldCompleteImmediately = shouldCompleteImmediately
         self.productIds = productIds

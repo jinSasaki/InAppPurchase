@@ -46,7 +46,7 @@ final public class InAppPurchase {
     fileprivate let receiptRefreshProvider: ReceiptRefreshProvidable
 
     internal init(product: ProductProvidable = ProductProvider(),
-                  payment: PaymentProvidable = PaymentProvider(),
+                  payment: PaymentProvidable = PaymentProvider(shouldCompleteImmediately: true, productIds: nil),
                   receiptRefresh: ReceiptRefreshProvidable = ReceiptRefreshProvider()) {
         self.productProvider = product
         self.paymentProvider = payment
@@ -56,7 +56,7 @@ final public class InAppPurchase {
 
 extension InAppPurchase {
     public convenience init(shouldCompleteImmediately: Bool, productIds: [String]? = nil) {
-        self.init(payment: PaymentProvider(shouldCompleteImmediately: shouldCompleteImmediately))
+        self.init(payment: PaymentProvider(shouldCompleteImmediately: shouldCompleteImmediately, productIds: productIds))
     }
 }
 
