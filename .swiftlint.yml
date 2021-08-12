@@ -1,11 +1,11 @@
 excluded:
-  - Example
+  - Examples
 
 disabled_rules:
   - xctfail_message
   - nesting
 file_length:
-  - 600 # warning
+  - 800 # warning
   - 1000 # error
 line_length:
   - 200 # warning

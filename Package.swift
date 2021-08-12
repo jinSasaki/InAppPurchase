@@ -10,12 +10,12 @@ let package = Package(
     ],
     products: [
         .library(name: "InAppPurchase", targets: ["InAppPurchase"]),
-        .library(name: "InAppPurchaseStubs", targets: ["InAppPurchaseStubs"]),
+        .library(name: "InAppPurchaseStubs", targets: ["InAppPurchaseStubs"])
     ],
     targets: [
         .target(name: "InAppPurchase", path: "Sources"),
         .target(name: "InAppPurchaseStubs", dependencies: ["InAppPurchase"], path: "InAppPurchaseStubs"),
-        .testTarget(name: "InAppPurchaseTests", dependencies: ["InAppPurchase", "InAppPurchaseStubs"], path: "Tests"),
+        .testTarget(name: "InAppPurchaseTests", dependencies: ["InAppPurchase", "InAppPurchaseStubs"], path: "Tests")
     ],
     swiftLanguageVersions: [.v5]
 )
