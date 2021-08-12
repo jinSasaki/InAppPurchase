@@ -18,12 +18,20 @@ enum Constant {
 
 final class ViewController: UIViewController {
 
-    var responses: [PaymentResponse] = []
+    var transactions: [PaymentTransaction] = []
 
     @IBOutlet private weak var tableView: UITableView! {
         didSet {
             self.tableView.delegate = self
             self.tableView.dataSource = self
+        }
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
+            self?.reloadTransactions()
         }
     }
 
@@ -59,36 +67,39 @@ final class ViewController: UIViewController {
             case .deferred:
                 print("[DEFERRED] \(response.transaction.transactionIdentifier ?? "nil")")
             }
-            self.responses.append(response)
-            self.tableView.reloadData()
+            self.reloadTransactions()
         case .failure(let error):
             print(error)
         }
+    }
+
+    private func reloadTransactions() {
+        self.transactions = InAppPurchase.custom.transactions
+        self.tableView.reloadData()
     }
 }
 
 extension ViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return responses.count
+        return transactions.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "default")
-        let response = responses[indexPath.row]
-        cell.textLabel?.text = "\(response.transaction.productIdentifier) \(response.transaction.transactionIdentifier ?? "-")"
-        cell.detailTextLabel?.text = "\(response.state)"
+        let transaction = transactions[indexPath.row]
+        cell.textLabel?.text = "\(transaction.productIdentifier) \(transaction.transactionIdentifier ?? "-")"
+        cell.detailTextLabel?.text = "\(transaction.state)"
         return cell
     }
 }
 
 extension ViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let response = responses[indexPath.row]
-        let alert = UIAlertController(title: "Finish transaction?", message: response.transaction.transactionIdentifier, preferredStyle: .alert)
+        let transaction = transactions[indexPath.row]
+        let alert = UIAlertController(title: "Finish transaction?", message: transaction.transactionIdentifier, preferredStyle: .alert)
         alert.addAction(.init(title: "Finish", style: .default, handler: { [weak self] _ in
-            InAppPurchase.custom.finish(transaction: response.transaction)
-            self?.responses.removeAll(where: { $0.transaction.transactionIdentifier == response.transaction.transactionIdentifier })
-            self?.tableView.reloadData()
+            InAppPurchase.custom.finish(transaction: transaction)
+            self?.reloadTransactions()
         }))
         alert.addAction(.init(title: "Cancel", style: .cancel, handler: nil))
         self.present(alert, animated: true, completion: nil)
