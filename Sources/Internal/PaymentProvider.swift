@@ -17,6 +17,7 @@ protocol PaymentQueue {
     func add(_ payment: SKPayment)
     func restoreCompletedTransactions()
     func finishTransaction(_ transaction: SKPaymentTransaction)
+    var transactions: [SKPaymentTransaction] { get }
 }
 
 final internal class PaymentProvider: NSObject {
@@ -159,6 +160,9 @@ extension PaymentProvider: SKPaymentTransactionObserver {
         paymentQueue.finishTransaction(transaction.skTransaction)
     }
 
+    internal var transactions: [PaymentTransaction] {
+        paymentQueue.transactions.map(PaymentTransaction.init(_:))
+    }
 }
 
 // MARK: - SKPaymentQueue extension

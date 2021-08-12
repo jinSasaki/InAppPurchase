@@ -639,6 +639,27 @@ class InAppPurchaseTests: XCTestCase {
         iap.finish(transaction: .init(transaction))
         wait(for: [expectation], timeout: 1)
     }
+
+    func testTransactions() {
+        let paymentProvider = StubPaymentProvider(transactions: [
+            .init(StubPaymentTransaction(
+                transactionIdentifier: "TRANSACTION_001",
+                transactionState: .purchased
+            )),
+            .init(StubPaymentTransaction(
+                transactionIdentifier: "TRANSACTION_002",
+                transactionState: .deferred
+            ))
+        ])
+        let iap = InAppPurchase(payment: paymentProvider)
+        let transactions = iap.transactions
+
+        XCTAssertEqual(transactions.count, 2)
+        XCTAssertEqual(transactions[0].transactionIdentifier, "TRANSACTION_001")
+        XCTAssertEqual(transactions[0].state, .purchased)
+        XCTAssertEqual(transactions[1].transactionIdentifier, "TRANSACTION_002")
+        XCTAssertEqual(transactions[1].state, .deferred)
+    }
 }
 
 extension XCTestCase {

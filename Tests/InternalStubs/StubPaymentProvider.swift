@@ -20,6 +20,7 @@ public final class StubPaymentProvider: PaymentProvidable {
     private let _setShouldAddStorePaymentHandler: ((@escaping ShouldAddStorePaymentHandler) -> Void)?
     private let _fallbackHandler: ((_ fallbackHandler: @escaping PaymentHandler) -> Void)?
     private let _finishTransactionHandler: ((_ transaction: PaymentTransaction) -> Void)?
+    private let _transactions: [PaymentTransaction]
 
     public init(canMakePayments: Bool = true,
                 addTransactionObserverHandler: (() -> Void)? = nil,
@@ -29,7 +30,8 @@ public final class StubPaymentProvider: PaymentProvidable {
                 addProductIdentifierHandler: ((_ productIdentifier: String, _ handler: @escaping PaymentHandler) -> Void)? = nil,
                 setShouldAddStorePaymentHandler: ((@escaping ShouldAddStorePaymentHandler) -> Void)? = nil,
                 fallbackHandler: ((_ fallbackHandler: @escaping PaymentHandler) -> Void)? = nil,
-                finishTransactionHandler: ((_ transaction: PaymentTransaction) -> Void)? = nil) {
+                finishTransactionHandler: ((_ transaction: PaymentTransaction) -> Void)? = nil,
+                transactions: [PaymentTransaction] = []) {
 
         self._canMakePayments = canMakePayments
         self._addTransactionObserverHandler = addTransactionObserverHandler
@@ -40,6 +42,7 @@ public final class StubPaymentProvider: PaymentProvidable {
         self._setShouldAddStorePaymentHandler = setShouldAddStorePaymentHandler
         self._fallbackHandler = fallbackHandler
         self._finishTransactionHandler = finishTransactionHandler
+        self._transactions = transactions
     }
 
     public func canMakePayments() -> Bool {
@@ -76,5 +79,9 @@ public final class StubPaymentProvider: PaymentProvidable {
 
     public func finish(transaction: PaymentTransaction) {
         _finishTransactionHandler?(transaction)
+    }
+
+    public var transactions: [PaymentTransaction] {
+        _transactions
     }
 }
