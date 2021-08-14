@@ -57,4 +57,8 @@ public final class StubPaymentTransaction: SKPaymentTransaction {
     public var productIdentifier: String {
         return _payment.productIdentifier
     }
+
+    public func transform() -> PaymentTransaction {
+        return PaymentTransaction(self)
+    }
 }

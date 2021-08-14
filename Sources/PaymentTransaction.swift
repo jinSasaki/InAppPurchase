@@ -49,7 +49,8 @@ public struct PaymentTransaction {
     }
 
     internal let skTransaction: SKPaymentTransaction
-    internal init(_ skTransaction: SKPaymentTransaction) {
+
+    public init(_ skTransaction: SKPaymentTransaction) {
         self.skTransaction = skTransaction
     }
 }
