@@ -32,7 +32,7 @@ final public class InAppPurchase {
         let code: Code
         let transaction: PaymentTransaction?
 
-        public enum Code: Swift.Error, CustomNSError {
+        public enum Code {
             case emptyProducts
             case invalid(productIds: [String])
             case paymentNotAllowed
@@ -43,15 +43,29 @@ final public class InAppPurchase {
             case unknown
         }
 
+        public static var errorDomain: String {
+            return "InAppPurchase.Error"
+        }
+
         public var errorCode: Int {
-            return self.code.errorCode
+            switch self.code {
+            case .emptyProducts: return 0
+            case .invalid: return 1
+            case .paymentNotAllowed: return 2
+            case .paymentCancelled: return 3
+            case .storeProductNotAvailable: return 4
+            case .storeTrouble: return 5
+            case .with(let error): return (error as NSError).code
+            case .unknown: return 999
+            }
         }
 
         public var errorUserInfo: [String: Any] {
-            var userInfo = self.code.errorUserInfo
-            userInfo["transaction_identifier"] = self.transaction?.transactionIdentifier
-            userInfo["transaction_state"] = self.transaction?.state
-            userInfo["product_identifier"] = self.transaction?.productIdentifier
+            var userInfo: [String: Any] = [:]
+            userInfo["iap_code"] = self.code
+            userInfo["iap_transaction_identifier"] = self.transaction?.transactionIdentifier
+            userInfo["iap_transaction_state"] = self.transaction?.state
+            userInfo["iap_product_identifier"] = self.transaction?.productIdentifier
             return userInfo
         }
     }
@@ -191,7 +205,7 @@ extension InAppPurchase: InAppPurchaseProvidable {
 extension InAppPurchase.Error: Equatable {
     public static func == (lhs: InAppPurchase.Error, rhs: InAppPurchase.Error) -> Bool {
         return lhs.code == rhs.code
-            && lhs.transaction?.productIdentifier == rhs.transaction?.productIdentifier
+            && lhs.transaction?.transactionIdentifier == rhs.transaction?.transactionIdentifier
             && lhs.transaction?.state == rhs.transaction?.state
             && lhs.transaction?.productIdentifier == rhs.transaction?.productIdentifier
     }
