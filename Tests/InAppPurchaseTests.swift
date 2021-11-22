@@ -26,11 +26,46 @@ class InAppPurchaseTests: XCTestCase {
         XCTAssertEqual(InAppPurchase.Error(error: nil).code, .unknown)
     }
 
-    func testInAppPurchaseErrorEquatable() {
+    func testInAppPurchaseErrorDomain() {
+        XCTAssertEqual((InAppPurchase.Error(code: .emptyProducts, transaction: nil) as NSError).domain, "InAppPurchase.Error")
+    }
+
+    func testInAppPurchaseErrorCode() {
+        XCTAssertEqual(InAppPurchase.Error(code: .emptyProducts, transaction: nil).errorCode, 0)
+        XCTAssertEqual(InAppPurchase.Error(code: .invalid(productIds: []), transaction: nil).errorCode, 1)
+        XCTAssertEqual(InAppPurchase.Error(code: .paymentNotAllowed, transaction: nil).errorCode, 2)
+        XCTAssertEqual(InAppPurchase.Error(code: .paymentCancelled, transaction: nil).errorCode, 3)
+        XCTAssertEqual(InAppPurchase.Error(code: .storeProductNotAvailable, transaction: nil).errorCode, 4)
+        XCTAssertEqual(InAppPurchase.Error(code: .storeTrouble, transaction: nil).errorCode, 5)
+        let nsError = NSError(domain: "", code: 100, userInfo: nil)
+        XCTAssertEqual(InAppPurchase.Error(error: nsError).errorCode, 100)
+        XCTAssertEqual(InAppPurchase.Error(code: .unknown, transaction: nil).errorCode, 999)
+    }
+
+    func testInAppPurchaseErrorCodeEquatable() {
         XCTAssertEqual(InAppPurchase.Error.Code.emptyProducts, .emptyProducts)
         XCTAssertEqual(InAppPurchase.Error.Code.invalid(productIds: ["a"]), .invalid(productIds: ["a"]))
         XCTAssertNotEqual(InAppPurchase.Error.Code.invalid(productIds: ["a"]), .invalid(productIds: ["b"]))
         XCTAssertNotEqual(InAppPurchase.Error.Code.paymentNotAllowed, .paymentCancelled)
+    }
+
+    func testInAppPurchaseErrorEquatable() {
+        let transaction1 = PaymentTransaction(StubPaymentTransaction(
+            transactionIdentifier: "TRANSACTION_001",
+            transactionState: .purchased, original: nil,
+            payment: StubPayment(productIdentifier: "PRODUCT_001"),
+            error: nil
+        ))
+        let transaction2 = PaymentTransaction(StubPaymentTransaction(
+            transactionIdentifier: "TRANSACTION_002",
+            transactionState: .purchased, original: nil,
+            payment: StubPayment(productIdentifier: "PRODUCT_002"),
+            error: nil
+        ))
+        XCTAssertEqual(InAppPurchase.Error(code: .emptyProducts, transaction: nil), InAppPurchase.Error(code: .emptyProducts, transaction: nil))
+        XCTAssertEqual(InAppPurchase.Error(code: .storeTrouble, transaction: transaction1), InAppPurchase.Error(code: .storeTrouble, transaction: transaction1))
+        XCTAssertNotEqual(InAppPurchase.Error(code: .emptyProducts, transaction: nil), InAppPurchase.Error(code: .storeTrouble, transaction: nil))
+        XCTAssertNotEqual(InAppPurchase.Error(code: .storeTrouble, transaction: transaction1), InAppPurchase.Error(code: .storeTrouble, transaction: transaction2))
     }
 
     func testInAppPurchasePaymentStateEqutable() {
