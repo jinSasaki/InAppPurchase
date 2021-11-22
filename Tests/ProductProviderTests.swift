@@ -56,7 +56,7 @@ class ProductProviderTests: XCTestCase {
             case .success:
                 XCTFail()
             case .failure(let error):
-                switch error {
+                switch error.code {
                 case .invalid(let productIds):
                     XCTAssertEqual(productIds.count, 1)
                     XCTAssertEqual(productIds.first, "INVALID_PRODUCT_001")
@@ -79,7 +79,7 @@ class ProductProviderTests: XCTestCase {
             case .success:
                 XCTFail()
             case .failure(let error):
-                if case let .with(err) = error {
+                if case let .with(err) = error.code {
                     let err = err as NSError
                     XCTAssertEqual(err.domain, "test")
                     XCTAssertEqual(err.code, 500)

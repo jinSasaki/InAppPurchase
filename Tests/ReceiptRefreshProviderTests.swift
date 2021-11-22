@@ -54,7 +54,7 @@ final class ReceiptRefreshProviderTests: XCTestCase {
             case .success:
                 XCTFail()
             case .failure(let error):
-                if case let .with(err) = error {
+                if case let .with(err) = error.code {
                     let err = err as NSError
                     XCTAssertEqual(err.domain, "test")
                     XCTAssertEqual(err.code, 500)

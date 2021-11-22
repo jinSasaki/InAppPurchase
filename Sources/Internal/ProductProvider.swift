@@ -44,7 +44,7 @@ extension ProductProvider: SKProductsRequestDelegate {
         dispatchQueue.async {
             let handler = self.requestHandlers.removeValue(forKey: request.id)
             DispatchQueue.main.async {
-                handler?(.failure(InAppPurchase.Error(error: error)))
+                handler?(.failure(InAppPurchase.Error(transaction: nil, error: error)))
             }
         }
     }
@@ -54,7 +54,7 @@ extension ProductProvider: SKProductsRequestDelegate {
             let handler = self.requestHandlers.removeValue(forKey: request.id)
             guard response.invalidProductIdentifiers.isEmpty else {
                 DispatchQueue.main.async {
-                    handler?(.failure(InAppPurchase.Error.invalid(productIds: response.invalidProductIdentifiers)))
+                    handler?(.failure(.init(code: .invalid(productIds: response.invalidProductIdentifiers), transaction: nil)))
                 }
                 return
             }

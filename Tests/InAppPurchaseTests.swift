@@ -17,20 +17,20 @@ class InAppPurchaseTests: XCTestCase {
         func skError(code: SKError.Code) -> SKError {
             return SKError(_nsError: NSError(domain: SKErrorDomain, code: code.rawValue, userInfo: nil))
         }
-        XCTAssertEqual(InAppPurchase.Error(error: skError(code: .paymentNotAllowed)), .paymentNotAllowed)
-        XCTAssertEqual(InAppPurchase.Error(error: skError(code: .paymentCancelled)), .paymentCancelled)
-        XCTAssertEqual(InAppPurchase.Error(error: skError(code: .storeProductNotAvailable)), .storeProductNotAvailable)
-        XCTAssertEqual(InAppPurchase.Error(error: skError(code: .unknown)), .storeTrouble)
+        XCTAssertEqual(InAppPurchase.Error(error: skError(code: .paymentNotAllowed)).code, .paymentNotAllowed)
+        XCTAssertEqual(InAppPurchase.Error(error: skError(code: .paymentCancelled)).code, .paymentCancelled)
+        XCTAssertEqual(InAppPurchase.Error(error: skError(code: .storeProductNotAvailable)).code, .storeProductNotAvailable)
+        XCTAssertEqual(InAppPurchase.Error(error: skError(code: .unknown)).code, .storeTrouble)
         let nsError = NSError(domain: "", code: 0, userInfo: nil)
-        XCTAssertEqual(InAppPurchase.Error(error: nsError), .with(error: nsError))
-        XCTAssertEqual(InAppPurchase.Error(error: nil), .unknown)
+        XCTAssertEqual(InAppPurchase.Error(error: nsError).code, .with(error: nsError))
+        XCTAssertEqual(InAppPurchase.Error(error: nil).code, .unknown)
     }
 
     func testInAppPurchaseErrorEquatable() {
-        XCTAssertEqual(InAppPurchase.Error.emptyProducts, .emptyProducts)
-        XCTAssertEqual(InAppPurchase.Error.invalid(productIds: ["a"]), .invalid(productIds: ["a"]))
-        XCTAssertNotEqual(InAppPurchase.Error.invalid(productIds: ["a"]), .invalid(productIds: ["b"]))
-        XCTAssertNotEqual(InAppPurchase.Error.paymentNotAllowed, .paymentCancelled)
+        XCTAssertEqual(InAppPurchase.Error.Code.emptyProducts, .emptyProducts)
+        XCTAssertEqual(InAppPurchase.Error.Code.invalid(productIds: ["a"]), .invalid(productIds: ["a"]))
+        XCTAssertNotEqual(InAppPurchase.Error.Code.invalid(productIds: ["a"]), .invalid(productIds: ["b"]))
+        XCTAssertNotEqual(InAppPurchase.Error.Code.paymentNotAllowed, .paymentCancelled)
     }
 
     func testInAppPurchasePaymentStateEqutable() {
@@ -147,7 +147,7 @@ class InAppPurchaseTests: XCTestCase {
         let paymentProvider = StubPaymentProvider(addProductIdentifierHandler: { productIdentifier, handler in
             XCTAssertEqual(productIdentifier, "PRODUCT_001")
             expectation1.fulfill()
-            handler(queue, .failure(InAppPurchase.Error.storeTrouble))
+            handler(queue, .failure(.init(code: .storeTrouble, transaction: nil)))
         }, setShouldAddStorePaymentHandler: { handler in
             expectation2.fulfill()
             let paymet = StubPayment(productIdentifier: "PRODUCT_001")
@@ -163,7 +163,7 @@ class InAppPurchaseTests: XCTestCase {
                 case .success:
                     XCTFail()
                 case .failure(let error):
-                    XCTAssertEqual(error, InAppPurchase.Error.storeTrouble)
+                    XCTAssertEqual(error.code, .storeTrouble)
                 }
                 expectation3.fulfill()
         })
@@ -223,7 +223,7 @@ class InAppPurchaseTests: XCTestCase {
 
     func testFetchProductWhereFailure() {
         let expectation = self.expectation()
-        let productProvider = StubProductProvider(result: .failure(.storeTrouble))
+        let productProvider = StubProductProvider(result: .failure(.init(code: .storeTrouble, transaction: nil)))
         let paymentProvider = StubPaymentProvider()
 
         let iap = InAppPurchase(product: productProvider, payment: paymentProvider)
@@ -233,7 +233,7 @@ class InAppPurchaseTests: XCTestCase {
                 XCTFail()
             case .failure(let error):
                 let expression: Bool
-                if case .storeTrouble = error {
+                if case .storeTrouble = error.code {
                     expression = true
                 } else {
                     expression = false
@@ -286,7 +286,7 @@ class InAppPurchaseTests: XCTestCase {
         let productProvider = StubProductProvider()
         let queue = StubPaymentQueue()
         let paymentProvider = StubPaymentProvider(restoreHandler: { (handler) in
-            handler(queue, .storeTrouble)
+            handler(queue, .init(code: .storeTrouble, transaction: nil))
         })
 
         let iap = InAppPurchase(product: productProvider, payment: paymentProvider)
@@ -296,7 +296,7 @@ class InAppPurchaseTests: XCTestCase {
                 XCTFail()
             case .failure(let error):
                 let expression: Bool
-                if case .storeTrouble = error {
+                if case .storeTrouble = error.code {
                     expression = true
                 } else {
                     expression = false
@@ -351,7 +351,7 @@ class InAppPurchaseTests: XCTestCase {
             switch result {
             case .failure(let error):
                 let expression: Bool
-                if case .emptyProducts = error {
+                if case .emptyProducts = error.code {
                     expression = true
                 } else {
                     expression = false
@@ -366,7 +366,7 @@ class InAppPurchaseTests: XCTestCase {
     }
 
     func testPurchaseWhereFailureFetchProduct() {
-        let productProvider = StubProductProvider(result: .failure(.storeTrouble))
+        let productProvider = StubProductProvider(result: .failure(.init(code: .storeTrouble, transaction: nil)))
         let paymentProvider = StubPaymentProvider(addPaymentHandler: { _, _ in
             XCTFail()
         })
@@ -377,7 +377,7 @@ class InAppPurchaseTests: XCTestCase {
             switch result {
             case .failure(let error):
                 let expression: Bool
-                if case .storeTrouble = error {
+                if case .storeTrouble = error.code {
                     expression = true
                 } else {
                     expression = false
@@ -399,7 +399,7 @@ class InAppPurchaseTests: XCTestCase {
             XCTAssertEqual(payment.productIdentifier, "PRODUCT_001")
 
             let queue = StubPaymentQueue()
-            handler(queue, .failure(.storeTrouble))
+            handler(queue, .failure(.init(code: .storeTrouble, transaction: nil)))
 
             expectation1.fulfill()
         })
@@ -410,7 +410,7 @@ class InAppPurchaseTests: XCTestCase {
             switch result {
             case .failure(let error):
                 let expression: Bool
-                if case .storeTrouble = error {
+                if case .storeTrouble = error.code {
                     expression = true
                 } else {
                     expression = false
@@ -450,7 +450,7 @@ class InAppPurchaseTests: XCTestCase {
             switch result {
             case .failure(let error):
                 let expression: Bool
-                if case .storeTrouble = error {
+                if case .storeTrouble = error.code {
                     expression = true
                 } else {
                     expression = false
@@ -462,7 +462,7 @@ class InAppPurchaseTests: XCTestCase {
             expectation.fulfill()
         }
         let fallbackHandler = InAppPurchase.convertToFallbackHandler(from: purchaseHandler)
-        fallbackHandler(StubPaymentQueue(), .failure(.storeTrouble))
+        fallbackHandler(StubPaymentQueue(), .failure(.init(code: .storeTrouble, transaction: nil)))
         wait(for: [expectation], timeout: 1)
     }
 
@@ -567,7 +567,7 @@ class InAppPurchaseTests: XCTestCase {
             case .success:
                 XCTFail()
             case .failure(let error):
-                if case let .with(err) = error {
+                if case let .with(err) = error.code {
                     let err = err as NSError
                     XCTAssertEqual(err.domain, "test")
                     XCTAssertEqual(err.code, 500)
@@ -598,7 +598,7 @@ class InAppPurchaseTests: XCTestCase {
     }
 
     func testRefreshReceiptWhereFailure() {
-        let receiptRefreshProvider = StubReceiptRefreshProvider(result: .failure(.storeTrouble))
+        let receiptRefreshProvider = StubReceiptRefreshProvider(result: .failure(.init(code: .storeTrouble, transaction: nil)))
         let expectation = self.expectation()
         let iap = InAppPurchase(receiptRefresh: receiptRefreshProvider)
         iap.refreshReceipt(handler: { (result) in
@@ -607,7 +607,7 @@ class InAppPurchaseTests: XCTestCase {
                 XCTFail()
             case .failure(let error):
                 let expression: Bool
-                if case .storeTrouble = error {
+                if case .storeTrouble = error.code {
                     expression = true
                 } else {
                     expression = false
