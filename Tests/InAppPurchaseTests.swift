@@ -11,8 +11,7 @@ import XCTest
 import StoreKit
 import InAppPurchaseStubs
 
-class InAppPurchaseTests: XCTestCase {
-
+class InAppPurchaseErrorTests: XCTestCase {
     func testInAppPurchaseErrorInit() {
         func skError(code: SKError.Code) -> SKError {
             return SKError(_nsError: NSError(domain: SKErrorDomain, code: code.rawValue, userInfo: nil))
@@ -67,6 +66,9 @@ class InAppPurchaseTests: XCTestCase {
         XCTAssertNotEqual(InAppPurchase.Error(code: .emptyProducts, transaction: nil), InAppPurchase.Error(code: .storeTrouble, transaction: nil))
         XCTAssertNotEqual(InAppPurchase.Error(code: .storeTrouble, transaction: transaction1), InAppPurchase.Error(code: .storeTrouble, transaction: transaction2))
     }
+}
+
+class InAppPurchaseTests: XCTestCase {
 
     func testInAppPurchasePaymentStateEqutable() {
         XCTAssertEqual(PaymentState.deferred, PaymentState.deferred)
