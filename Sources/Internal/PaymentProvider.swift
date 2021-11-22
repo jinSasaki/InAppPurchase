@@ -56,7 +56,7 @@ extension PaymentProvider: PaymentProvidable {
 
     internal func add(payment: SKPayment, handler: @escaping PaymentHandler) {
         if let productIds = self.productIds, !productIds.contains(payment.productIdentifier) {
-            handler(self.paymentQueue, .failure(InAppPurchase.Error.invalid(productIds: [payment.productIdentifier])))
+            handler(self.paymentQueue, .failure(.init(code: .invalid(productIds: [payment.productIdentifier]), transaction: nil)))
             return
         }
         addPaymentHandler(withProductIdentifier: payment.productIdentifier, handler: handler)
@@ -147,7 +147,7 @@ extension PaymentProvider: SKPaymentTransactionObserver {
             let handlers = self.restoreHandlers
             self.restoreHandlers = []
             DispatchQueue.main.async {
-                handlers.forEach({ $0(queue, InAppPurchase.Error(error: error)) })
+                handlers.forEach({ $0(queue, InAppPurchase.Error(transaction: nil, error: error)) })
             }
         }
     }

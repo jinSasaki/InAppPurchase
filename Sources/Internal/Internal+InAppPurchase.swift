@@ -37,21 +37,26 @@ internal protocol ReceiptRefreshProvidable {
 }
 
 extension InAppPurchase.Error {
-    internal init(error: Swift.Error?) {
+    internal init(transaction: SKPaymentTransaction? = nil, error: Error? = nil) {
+        let error = transaction?.error ?? error
+        var paymentTransaction: PaymentTransaction?
+        if let transaction = transaction {
+            paymentTransaction = .init(transaction)
+        }
         switch (error as? SKError)?.code {
         case .paymentNotAllowed?:
-            self = .paymentNotAllowed
+            self = .init(code: .paymentNotAllowed, transaction: paymentTransaction)
         case .paymentCancelled?:
-            self = .paymentCancelled
+            self = .init(code: .paymentCancelled, transaction: paymentTransaction)
         case .storeProductNotAvailable?:
-            self = .storeProductNotAvailable
+            self = .init(code: .storeProductNotAvailable, transaction: paymentTransaction)
         case .unknown?:
-            self = .storeTrouble
+            self = .init(code: .storeTrouble, transaction: paymentTransaction)
         default:
             if let error = error {
-                self = .with(error: error)
+                self = .init(code: .with(error: error), transaction: paymentTransaction)
             } else {
-                self = .unknown
+                self = .init(code: .unknown, transaction: paymentTransaction)
             }
         }
     }
@@ -83,7 +88,7 @@ extension InAppPurchase {
         case .deferred:
             handler?(.success(Internal.PaymentResponse(state: .deferred, transaction: PaymentTransaction(transaction))))
         case .failed:
-            handler?(.failure(InAppPurchase.Error(error: transaction.error)))
+            handler?(.failure(InAppPurchase.Error(transaction: transaction, error: nil)))
         @unknown default:
             // Do nothing
             break

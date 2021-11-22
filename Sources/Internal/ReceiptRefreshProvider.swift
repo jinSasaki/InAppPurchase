@@ -43,7 +43,7 @@ extension ReceiptRefreshProvider: SKRequestDelegate {
         dispatchQueue.async {
             let handler = self.requestHandlers.removeValue(forKey: request.id)
             DispatchQueue.main.async {
-                handler?(.failure(InAppPurchase.Error(error: error)))
+                handler?(.failure(InAppPurchase.Error(transaction: nil, error: error)))
             }
         }
     }

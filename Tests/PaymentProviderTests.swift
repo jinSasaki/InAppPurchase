@@ -71,7 +71,7 @@ class PaymentProviderTests: XCTestCase {
             case .success:
                 XCTFail()
             case .failure(let error):
-                XCTAssertEqual(error, .invalid(productIds: ["NOT_SUPPORT_PRODUCT_001"]))
+                XCTAssertEqual(error.code, .invalid(productIds: ["NOT_SUPPORT_PRODUCT_001"]))
             }
             addExpectation.fulfill()
         }
@@ -335,7 +335,7 @@ class PaymentProviderTests: XCTestCase {
 
         let expectation = self.expectation()
         provider.restoreCompletedTransactions { _, error in
-            if let error = error, case let .with(err) = error {
+            if let error = error, case let .with(err) = error.code {
                 let err = err as NSError
                 XCTAssertEqual(err.domain, "test")
                 XCTAssertEqual(err.code, 500)

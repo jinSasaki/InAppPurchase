@@ -28,15 +28,46 @@ final public class InAppPurchase {
     public typealias PurchaseHandler = (_ result: Result<PaymentResponse, InAppPurchase.Error>) -> Void
     public typealias ReceiptRefreshHandler = (_ result: Result<Void, InAppPurchase.Error>) -> Void
 
-    public enum Error: Swift.Error {
-        case emptyProducts
-        case invalid(productIds: [String])
-        case paymentNotAllowed
-        case paymentCancelled
-        case storeProductNotAvailable
-        case storeTrouble
-        case with(error: Swift.Error)
-        case unknown
+    public struct Error: Swift.Error, CustomNSError {
+        let code: Code
+        let transaction: PaymentTransaction?
+
+        public enum Code {
+            case emptyProducts
+            case invalid(productIds: [String])
+            case paymentNotAllowed
+            case paymentCancelled
+            case storeProductNotAvailable
+            case storeTrouble
+            case with(error: Swift.Error)
+            case unknown
+        }
+
+        public static var errorDomain: String {
+            return "InAppPurchase.Error"
+        }
+
+        public var errorCode: Int {
+            switch self.code {
+            case .emptyProducts: return 0
+            case .invalid: return 1
+            case .paymentNotAllowed: return 2
+            case .paymentCancelled: return 3
+            case .storeProductNotAvailable: return 4
+            case .storeTrouble: return 5
+            case .with(let error): return (error as NSError).code
+            case .unknown: return 999
+            }
+        }
+
+        public var errorUserInfo: [String: Any] {
+            var userInfo: [String: Any] = [:]
+            userInfo["iap_code"] = self.code
+            userInfo["iap_transaction_identifier"] = self.transaction?.transactionIdentifier
+            userInfo["iap_transaction_state"] = self.transaction?.state
+            userInfo["iap_product_identifier"] = self.transaction?.productIdentifier
+            return userInfo
+        }
     }
 
     public static let `default` = InAppPurchase()
@@ -127,7 +158,7 @@ extension InAppPurchase: InAppPurchaseProvidable {
             switch result {
             case .success(let products):
                 guard let product = products.first else {
-                    handler?(.failure(InAppPurchase.Error.emptyProducts))
+                    handler?(.failure(.init(code: .emptyProducts, transaction: nil)))
                     return
                 }
 
@@ -173,6 +204,15 @@ extension InAppPurchase: InAppPurchaseProvidable {
 
 extension InAppPurchase.Error: Equatable {
     public static func == (lhs: InAppPurchase.Error, rhs: InAppPurchase.Error) -> Bool {
+        return lhs.code == rhs.code
+            && lhs.transaction?.transactionIdentifier == rhs.transaction?.transactionIdentifier
+            && lhs.transaction?.state == rhs.transaction?.state
+            && lhs.transaction?.productIdentifier == rhs.transaction?.productIdentifier
+    }
+}
+
+extension InAppPurchase.Error.Code: Equatable {
+    public static func == (lhs: InAppPurchase.Error.Code, rhs: InAppPurchase.Error.Code) -> Bool {
         switch (lhs, rhs) {
         case (.emptyProducts, .emptyProducts): return true
         case (.invalid(productIds: let ids1), .invalid(productIds: let ids2)): return ids1 == ids2
@@ -180,7 +220,7 @@ extension InAppPurchase.Error: Equatable {
         case (.paymentCancelled, .paymentCancelled): return true
         case (.storeProductNotAvailable, .storeProductNotAvailable): return true
         case (.storeTrouble, .storeTrouble): return true
-        case (.with(error: let error1), .with(error: let error2)): return (error1 as NSError) == (error2 as NSError)
+        case (.with(let error1), .with(let error2)): return (error1 as NSError) == (error2 as NSError)
         case (.unknown, .unknown): return true
         default: return false
         }
