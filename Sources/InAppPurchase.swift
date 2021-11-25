@@ -29,8 +29,8 @@ final public class InAppPurchase {
     public typealias ReceiptRefreshHandler = (_ result: Result<Void, InAppPurchase.Error>) -> Void
 
     public struct Error: Swift.Error, CustomNSError {
-        let code: Code
-        let transaction: PaymentTransaction?
+        public let code: Code
+        public let transaction: PaymentTransaction?
 
         public enum Code {
             case emptyProducts
