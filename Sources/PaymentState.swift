@@ -12,5 +12,4 @@ public enum PaymentState: Equatable {
     case purchased
     case deferred
     case restored
-    case failed
 }
