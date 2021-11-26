@@ -152,6 +152,20 @@ extension InAppPurchase: InAppPurchaseProvidable {
     }
 
     public func purchase(productIdentifier: String, handler: InAppPurchase.PurchaseHandler? = nil) {
+        purchase(
+            productIdentifier: productIdentifier,
+            paymentBuildWith: { (product, completion) in
+                completion(.success(SKPayment(product: product)))
+            },
+            handler: handler
+        )
+    }
+
+    public func purchase(
+        productIdentifier: String,
+        paymentBuildWith paymentBuilder: @escaping ((_ product: SKProduct, _ completion: @escaping ((_ result: Result<SKPayment, Swift.Error>) -> Void)) -> Void),
+        handler: InAppPurchase.PurchaseHandler? = nil
+    ) {
         // Fetch product from App Store
         let requestId = UUID().uuidString
         productProvider.fetch(productIdentifiers: [productIdentifier], requestId: requestId) { [weak self] (result) in
@@ -162,19 +176,24 @@ extension InAppPurchase: InAppPurchaseProvidable {
                     return
                 }
 
-                // Add payment to App Store queue
-                let payment = SKPayment(product: product)
-                self?.paymentProvider.add(payment: payment, handler: { (_, result) in
+                paymentBuilder(product) { result in
                     switch result {
-                    case .success(let transaction):
-                        InAppPurchase.handle(
-                            transaction: transaction,
-                            handler: handler
-                        )
+                    case .success(let payment):
+                        self?.paymentProvider.add(payment: payment, handler: { (_, result) in
+                            switch result {
+                            case .success(let transaction):
+                                InAppPurchase.handle(
+                                    transaction: transaction,
+                                    handler: handler
+                                )
+                            case .failure(let error):
+                                handler?(.failure(error))
+                            }
+                        })
                     case .failure(let error):
-                        handler?(.failure(error))
+                        handler?(.failure(.init(code: .with(error: error), transaction: nil)))
                     }
-                })
+                }
             case .failure(let error):
                 handler?(.failure(error))
             }
