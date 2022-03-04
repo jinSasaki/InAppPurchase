@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "InAppPurchaseStubs"
-  s.version          = "2.7.4"
+  s.version          = "2.8.0"
   s.summary          = "Stub for InAppPurchase, Supporting application tests."
   s.homepage         = "https://github.com/jinSasaki/InAppPurchase"
   s.license          = 'MIT'
