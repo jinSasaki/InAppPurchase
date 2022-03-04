@@ -9,5 +9,15 @@ Pod::Spec.new do |s|
   s.social_media_url = 'https://twitter.com/sasakky_j'
   s.platform     = :ios, '9.0'
   s.requires_arc = true
-  s.source_files = 'Sources/**/*'
+
+  s.default_subspec = 'Core'
+
+  s.subspec 'Core' do |ss|
+    ss.source_files = 'Sources/**/*'
+  end
+
+  s.subspec 'Stubs' do |ss|
+    ss.dependency 'InAppPurchase/Core'
+    ss.source_files = 'InAppPurchaseStubs/Stubs'
+  end
 end
