@@ -49,6 +49,23 @@ extension Internal.Product: Product {
         }
         return Internal.ProductSubscriptionPeriod(subscriptionPeriod)
     }
+    var discounts: [ProductDiscount] {
+        guard #available(iOS 12.2, *) else {
+            return []
+        }
+        return skProduct.discounts.map { Internal.ProductDiscount($0) }
+    }
+}
+
+extension Internal {
+    @available(iOS 12.2, *)
+    struct ProductDiscount {
+        private let skProductDiscount: SKProductDiscount
+
+        init(_ skProductDiscount: SKProductDiscount) {
+            self.skProductDiscount = skProductDiscount
+        }
+    }
 }
 
 extension Internal {
@@ -76,6 +93,61 @@ extension PeriodUnit {
         case .week: self = .week
         case .month: self = .month
         case .year: self = .year
+        @unknown default: return nil
+        }
+    }
+}
+
+@available(iOS 12.2, *)
+extension Internal.ProductDiscount: ProductDiscount {
+    var offerIdentifier: String? {
+        return skProductDiscount.identifier
+    }
+
+    var type: ProductDiscountType? {
+        return ProductDiscountType(skProductDiscount.type)
+    }
+
+    var price: Decimal {
+        return skProductDiscount.price as Decimal
+    }
+
+    var priceLocale: Locale {
+        return skProductDiscount.priceLocale
+    }
+
+    var paymentMode: ProductDiscountPaymentMode? {
+        return ProductDiscountPaymentMode(skProductDiscount.paymentMode)
+    }
+
+    var numberOfPeriods: Int {
+        return skProductDiscount.numberOfPeriods
+    }
+
+    var subscriptionPeriod: ProductSubscriptionPeriod? {
+        let period: SKProductSubscriptionPeriod = skProductDiscount.subscriptionPeriod
+        return Internal.ProductSubscriptionPeriod(period)
+    }
+}
+
+@available(iOS 12.2, *)
+extension ProductDiscountType {
+    init?(_ type: SKProductDiscount.`Type`) {
+        switch type {
+        case .introductory: self = .introductory
+        case .subscription: self = .subscription
+        @unknown default: return nil
+        }
+    }
+}
+
+@available(iOS 11.2, *)
+extension ProductDiscountPaymentMode {
+    init?(_ paymentMode: SKProductDiscount.PaymentMode) {
+        switch paymentMode {
+        case .freeTrial: self = .freeTrial
+        case .payAsYouGo: self = .payAsYouGo
+        case .payUpFront: self = .payUpFront
         @unknown default: return nil
         }
     }

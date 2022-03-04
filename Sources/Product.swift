@@ -18,6 +18,7 @@ public protocol Product {
     var downloadContentLengths: [NSNumber] { get }
     var downloadContentVersion: String { get }
     var subscriptionPeriod: ProductSubscriptionPeriod? { get }
+    var discounts: [ProductDiscount] { get }
 }
 
 public protocol ProductSubscriptionPeriod {
@@ -30,4 +31,27 @@ public enum PeriodUnit {
     case week
     case month
     case year
+}
+
+public protocol ProductDiscount {
+    var offerIdentifier: String? { get }
+    var type: ProductDiscountType? { get }
+    var price: Decimal { get }
+    var priceLocale: Locale { get }
+    var paymentMode: ProductDiscountPaymentMode? { get }
+    var numberOfPeriods: Int { get }
+    var subscriptionPeriod: ProductSubscriptionPeriod? { get }
+}
+
+public enum ProductDiscountType {
+    case introductory
+    case subscription
+    case unsupported
+}
+
+public enum ProductDiscountPaymentMode {
+    case payAsYouGo
+    case payUpFront
+    case freeTrial
+    case unsupported
 }

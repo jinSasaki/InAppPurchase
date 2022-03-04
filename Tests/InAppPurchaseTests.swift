@@ -461,6 +461,76 @@ class InAppPurchaseTests: XCTestCase {
         wait(for: [expectation1, expectation2], timeout: 1)
     }
 
+    func testPurchaseWithPaymentBuilder() {
+        let expectation1 = self.expectation()
+        let product = StubProduct(productIdentifier: "PRODUCT_001")
+        let productProvider = StubProductProvider(result: .success([product]))
+        let paymentProvider = StubPaymentProvider(addPaymentHandler: { (payment, handler) in
+            XCTAssertEqual(payment.productIdentifier, "PRODUCT_001")
+            XCTAssertEqual(payment.quantity, 99)
+
+            let queue = StubPaymentQueue()
+            let originalTransaction = StubPaymentTransaction(transactionIdentifier: "ORIGINAL_TRANSACTION_001", transactionState: .purchased, payment: payment)
+            let transaction = StubPaymentTransaction(transactionIdentifier: "TRANSACTION_001", transactionState: .purchased, original: originalTransaction, payment: payment)
+            handler(queue, .success(transaction))
+
+            expectation1.fulfill()
+        })
+
+        let expectation2 = self.expectation()
+        let iap = InAppPurchase(product: productProvider, payment: paymentProvider)
+        iap.purchase(
+            productIdentifier: "PRODUCT_001",
+            paymentBuildWith: { (product, completion) in
+                let payment = SKMutablePayment(product: product)
+                payment.quantity = 99
+                completion(.success(payment))
+            },
+            handler: { (result) in
+                switch result {
+                case .success(let state):
+                    XCTAssertEqual(state.state, .purchased)
+                    XCTAssertEqual(state.transaction.transactionIdentifier, "TRANSACTION_001")
+                    XCTAssertEqual(state.transaction.originalTransactionIdentifier, "ORIGINAL_TRANSACTION_001")
+                case .failure:
+                    XCTFail()
+                }
+                expectation2.fulfill()
+            })
+        wait(for: [expectation1, expectation2], timeout: 1)
+    }
+
+    func testPurchaseWithPaymentBuilderWhereFailureBuildPayment() {
+        let product = StubProduct(productIdentifier: "PRODUCT_001")
+        let productProvider = StubProductProvider(result: .success([product]))
+        let paymentProvider = StubPaymentProvider()
+
+        let expectation = self.expectation()
+        let iap = InAppPurchase(product: productProvider, payment: paymentProvider)
+        iap.purchase(
+            productIdentifier: "PRODUCT_001",
+            paymentBuildWith: { (product, handler) in
+                handler(.failure(InAppPurchase.Error(code: .paymentNotAllowed, transaction: nil)))
+            },
+            handler: { (result) in
+                switch result {
+                case .failure(let error):
+                    switch error.code {
+                    case .with(let error):
+                        let error = error as? InAppPurchase.Error
+                        XCTAssertNotNil(error)
+                        XCTAssertEqual(error!.code, .paymentNotAllowed)
+                    default:
+                        XCTFail()
+                    }
+                default:
+                    XCTFail()
+                }
+                expectation.fulfill()
+            })
+        wait(for: [expectation], timeout: 1)
+    }
+
     func testConvertWhereSuccess() {
         let expectation = self.expectation()
         let purchaseHandler: InAppPurchase.PurchaseHandler = { result in
