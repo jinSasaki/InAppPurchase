@@ -32,6 +32,11 @@ final public class InAppPurchase {
         public let code: Code
         public let transaction: PaymentTransaction?
 
+        public init(code: Code, transaction: PaymentTransaction?) {
+            self.code = code
+            self.transaction = transaction
+        }
+
         public enum Code {
             case emptyProducts
             case invalid(productIds: [String])
